@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  app:
+    image: ${APP_NAME}:latest
+    entrypoint: "app/entrypoint.sh"
+    environment:
+      - APP_NAME=${APP_NAME}
+      - VENV_PATH=${VENV_PATH}
+      - HOST=${HOST}
+      - PORT=${PORT}
+    ports:
+      - "${PORT}:${PORT}"
