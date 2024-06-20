@@ -1,4 +1,5 @@
-if __name__ == "__main__":
-    import sys
+from fastapi import FastAPI
 
-    print(f"It works in {sys.version}")
+from app.assembly import root_assembly
+
+app = root_assembly().get(FastAPI)
