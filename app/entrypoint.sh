@@ -1,5 +1,10 @@
 #!/bin/bash
 
+PARAMS=(--host "${HOST}" --port "${PORT}")
+if [[ $RELOAD == true ]]; then
+    PARAMS+=(--reload)
+fi
+
 set -e
-source .venv/bin/activate
-python3 app/main.py
+source ${VENV_PATH}/bin/activate
+uvicorn app.main:app "${PARAMS[@]}"
