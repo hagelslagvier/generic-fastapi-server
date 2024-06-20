@@ -5,8 +5,27 @@ description = ""
 authors = ["Alexey Naumov"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.11"
 fastapi = "^0.104.1"
+uvicorn = "^0.24.0.post1"
+pydantic = "^2.5.2"
+sqlalchemy = "^2.0.27"
+alembic = "^1.13.0"
+injector = "^0.21.0"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.7.0"
+ruff = "^0.1.6"
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+httpx = "^0.26.0"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
 
 [build-system]
 requires = ["poetry-core"]
