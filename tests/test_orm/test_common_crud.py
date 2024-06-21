@@ -11,7 +11,7 @@ def test_if_can_count_records(session, content) -> None:
     assert count == 10
 
 
-def test_if_can_create_student(session) -> None:
+def test_if_can_create_record(session) -> None:
     name = "John Doe"
     age = 20
 
@@ -23,7 +23,7 @@ def test_if_can_create_student(session) -> None:
     assert created.age == age
 
 
-def test_if_raises_exception_when_student_not_exist(session):
+def test_if_raises_exception_when_record_not_exist(session):
     user_crud = UserCRUD()
 
     with pytest.raises(DoesNotExistError) as error:
@@ -35,7 +35,7 @@ def test_if_raises_exception_when_student_not_exist(session):
     )
 
 
-def test_if_can_get_student(session) -> None:
+def test_if_can_get_record(session) -> None:
     name = "John Doe"
     age = 20
 
@@ -50,7 +50,7 @@ def test_if_can_get_student(session) -> None:
     assert retrieved.age == age
 
 
-def test_if_can_read_students(session, content) -> None:
+def test_if_can_read_records(session, content) -> None:
     user_crud = UserCRUD()
 
     retrieved = user_crud.read(session=session)
@@ -58,7 +58,7 @@ def test_if_can_read_students(session, content) -> None:
     assert {item.id for item in retrieved} == set(range(1, 11))
 
 
-def test_if_can_update_student(session) -> None:
+def test_if_can_update_record(session) -> None:
     name = "John Doe"
     age = 20
 
