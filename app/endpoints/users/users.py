@@ -59,7 +59,7 @@ def put(
     return response
 
 
-@router.delete("/")
+@router.delete("/{id}")
 def delete(id: int, session: Session = Depends(make_session)) -> UserSchemaOutput:
     user = UserCRUD().delete(id=id, session=session)
     response = UserSchemaOutput(**user.__dict__)
