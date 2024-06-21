@@ -1,5 +1,5 @@
 APP_NAME := "tiny"  # name of the app and docker image
-PYTHON := "/home/alexey_naumov/.pyenv/versions/3.11.8/bin/python3.11"  # absolute path to python interpreter
+PYTHON := "/home/alexey_naumov/.pyenv/versions/3.10.13/bin/python3.10"  # absolute path to python interpreter
 VENV := ".venv"  # virtual environment folder name in project root, when change see also project.toml
 RELOAD := "true"  # reload web server
 HOST := "0.0.0.0"
@@ -16,7 +16,7 @@ type-check:
 #    mypy tests/
 
 test:
-    pytest --cov=app/ --cov-report=html:tests/coverage tests/
+    pytest -s --cov=app/ --cov-report=html:tests/coverage tests/
 
 check:
     just fix
