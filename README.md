@@ -1,3 +1,7 @@
+## FastAPI Template
+
+---
+
 ### NB.01
 If you get the following error:
 ```text
