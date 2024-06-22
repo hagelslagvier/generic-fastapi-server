@@ -1,9 +1,10 @@
 from typing import Generator
+
 from sqlalchemy.orm import Session
 
-from app.assembly import db_assembly
+from app.assembly import root_injector
 
 
 def make_session() -> Generator:
-    with db_assembly().get(Session) as session:
+    with root_injector.get(Session) as session:
         yield session

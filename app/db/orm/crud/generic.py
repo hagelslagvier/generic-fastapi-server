@@ -1,10 +1,9 @@
-from typing import Any, TypeVar, Generic, Union, Dict, Optional, Generator, Type
+from typing import Any, Dict, Generator, Generic, Optional, Type, TypeVar, Union
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.errors import DoesNotExistError
-
 
 MT = TypeVar("MT")  # ORM Model Type
 

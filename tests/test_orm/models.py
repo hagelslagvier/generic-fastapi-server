@@ -1,8 +1,7 @@
-from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
-
-from sqlalchemy import DateTime, func, String, Integer
-
 from datetime import datetime
+
+from sqlalchemy import DateTime, Integer, String, func
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.db.orm.crud.common import GenericCRUD
 

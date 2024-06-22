@@ -1,14 +1,12 @@
 from typing import List
+
+from fastapi import APIRouter, Depends
+from injector import Injector
 from pydantic import NonNegativeInt
-from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.dependencies.db import make_session
-from app.endpoints.users.schema import UserSchemaOutput, UserSchemaInput
 from app.db.orm.crud.common import UserCRUD
-
-
-from fastapi import APIRouter
+from app.endpoints.users.schema import UserSchemaInput, UserSchemaOutput
 
 router = APIRouter(
     prefix="/users",
@@ -20,16 +18,19 @@ router = APIRouter(
 def read_many(
     skip: NonNegativeInt = 0,
     take: int = 5,
-    session: Session = Depends(make_session),
+    injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> List[UserSchemaOutput]:
-    users = UserCRUD().read(session=session, skip=skip, take=take)
+    users = UserCRUD().read(session=injector.get(Session), skip=skip, take=take)
     response = [UserSchemaOutput(**user.__dict__) for user in users]
     return response
 
 
 @router.get("/{id}")
-def read_one(id: int, session: Session = Depends(make_session)) -> UserSchemaOutput:
-    user = UserCRUD().get(session=session, id=id)
+def read_one(
+    id: int,
+    injector: Injector = Depends(lambda: router.injector),  # type: ignore
+) -> UserSchemaOutput:
+    user = UserCRUD().get(session=injector.get(Session), id=id)
     response = UserSchemaOutput(**user.__dict__)
 
     return response
@@ -37,10 +38,11 @@ def read_one(id: int, session: Session = Depends(make_session)) -> UserSchemaOut
 
 @router.post("/")
 def create(
-    user_schema: UserSchemaInput, session: Session = Depends(make_session)
+    user_schema: UserSchemaInput,
+    injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> UserSchemaOutput:
     user = UserCRUD().create(
-        session=session, payload=user_schema.dict(exclude_none=True)
+        session=injector.get(Session), payload=user_schema.dict(exclude_none=True)
     )
     response = UserSchemaOutput(**user.__dict__)
 
@@ -49,10 +51,14 @@ def create(
 
 @router.put("/{id}")
 def put(
-    id: int, user_schema: UserSchemaInput, session: Session = Depends(make_session)
+    id: int,
+    user_schema: UserSchemaInput,
+    injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> UserSchemaOutput:
     user = UserCRUD().update(
-        id=id, payload=user_schema.dict(exclude_none=True), session=session
+        id=id,
+        payload=user_schema.dict(exclude_none=True),
+        session=injector.get(Session),
     )
     response = UserSchemaOutput(**user.__dict__)
 
@@ -60,8 +66,11 @@ def put(
 
 
 @router.delete("/{id}")
-def delete(id: int, session: Session = Depends(make_session)) -> UserSchemaOutput:
-    user = UserCRUD().delete(id=id, session=session)
+def delete(
+    id: int,
+    injector: Injector = Depends(lambda: router.injector),  # type: ignore
+) -> UserSchemaOutput:
+    user = UserCRUD().delete(id=id, session=injector.get(Session))
     response = UserSchemaOutput(**user.__dict__)
 
     return response

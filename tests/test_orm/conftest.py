@@ -1,19 +1,19 @@
 import pytest
-
-from sqlalchemy import create_engine
+from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
-
+from tests.assembly import test_root_injector
 from tests.test_orm.models import User, UserCRUD
 
 
 @pytest.fixture
 def engine():
-    return create_engine("sqlite://")
+    return test_root_injector.get(Engine)
 
 
 @pytest.fixture
 def schema(engine):
+    User.metadata.drop_all(bind=engine)
     User.metadata.create_all(bind=engine)
 
 

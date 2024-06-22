@@ -1,7 +1,8 @@
 import json
 from typing import List
-from pydantic import NonNegativeInt
+
 from fastapi import APIRouter, HTTPException
+from pydantic import NonNegativeInt
 
 from app.endpoints.items.schema.requests import ItemPostRequest, ItemPutRequest
 from app.endpoints.items.schema.responses import Item
@@ -29,8 +30,9 @@ def create(item: ItemPostRequest) -> Item:
 
 @router.get("/{uuid}")
 def read_one(uuid: str) -> Item:
-    from app.db.fake import items
     from dataclasses import asdict
+
+    from app.db.fake import items
 
     if not (storage_item := items.get(uuid, None)):
         raise HTTPException(status_code=404, detail=f"Item with uuid={uuid} not found")
@@ -46,8 +48,9 @@ def read_one(uuid: str) -> Item:
 
 @router.get("/")
 def read_many(skip: NonNegativeInt = 0, take: int = 5) -> List[Item]:
-    from app.db.fake import items
     from dataclasses import asdict
+
+    from app.db.fake import items
 
     storage_items = [
         items[k] for index, k in enumerate(items) if skip <= index < skip + take
@@ -61,6 +64,7 @@ def read_many(skip: NonNegativeInt = 0, take: int = 5) -> List[Item]:
 def update(uuid: str, item: ItemPutRequest) -> Item:
     import json
     from dataclasses import asdict
+
     from app.db.fake import items
 
     if not (storage_item := items.get(uuid, None)):
@@ -77,8 +81,9 @@ def update(uuid: str, item: ItemPutRequest) -> Item:
 
 @router.delete("/{uuid}")
 def delete(uuid: str) -> Item:
-    from app.db.fake import items
     from dataclasses import asdict
+
+    from app.db.fake import items
 
     if not (storage_item := items.get(uuid, None)):
         raise HTTPException(status_code=404, detail=f"Item with uuid={uuid} not found")
