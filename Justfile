@@ -28,7 +28,7 @@ clean:
     rm -rf .ruff_cache
     rm -rf .mypy_cache
     rm -rf .pytest_cache
-    find . -regex '^.*\(__pycache__\|\.py[co]\)$' -delete
+    find ./app ./tests -regex '^.*\(__pycache__\|\.py[co]\)$' -delete
     yes Y | docker image prune
     docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force 2>/dev/null || true
 
