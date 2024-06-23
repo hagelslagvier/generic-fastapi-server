@@ -10,3 +10,13 @@ services:
       - PORT=${PORT}
     ports:
       - "${PORT}:${PORT}"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "tiny"
+    volumes:
+      - ./volumes/postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
