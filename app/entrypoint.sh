@@ -6,5 +6,5 @@ if [[ $RELOAD == true ]]; then
 fi
 
 set -e
-source ${VENV_PATH}/bin/activate
+source ${ABS_VENV_PATH}/bin/activate
 uvicorn app.main:app "${PARAMS[@]}"

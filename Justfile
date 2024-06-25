@@ -1,11 +1,6 @@
-APP_NAME := "tiny"  # name of the app and docker image
-PYTHON := "/home/alexey_naumov/.pyenv/versions/3.10.13/bin/python3.10"  # absolute path to python interpreter
-VENV := ".venv"  # virtual environment folder name in project root, when change see also project.toml
-RELOAD := "true"  # reload web server
-HOST := "0.0.0.0"
-PORT := "8000"
+set dotenv-load := true
 
-VENV_PATH := absolute_path(clean(VENV))
+ABS_VENV_PATH := absolute_path(clean("${VENV}"))
 
 fix:
     ruff check app/ tests/ --fix
@@ -33,28 +28,30 @@ clean:
     docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force 2>/dev/null || true
 
 build:
-    docker build --build-arg="APP_NAME={{APP_NAME}}" -t {{APP_NAME}} .
+    docker build \
+      --build-arg=APP_NAME=${APP_NAME} \
+      --build-arg=POETRY_VERSION=${POETRY_VERSION} \
+      --build-arg=PYTHON_IMAGE=${PYTHON_IMAGE} \
+      -t ${APP_NAME} .
 
 rebuild:
-    docker build --build-arg="APP_NAME={{APP_NAME}}" --no-cache -t {{APP_NAME}} .
+    docker build \
+      --build-arg=APP_NAME=${APP_NAME} \
+      --build-arg=POETRY_VERSION=${POETRY_VERSION} \
+      --build-arg=PYTHON_IMAGE=${PYTHON_IMAGE} \
+      --no-cache \
+      -t ${APP_NAME} .
 
 debug:
-    docker run --rm -it --entrypoint bash {{APP_NAME}}
+    docker run --rm -it --entrypoint bash ${APP_NAME}
 
 run:
-    VENV_PATH={{VENV_PATH}} \
-    HOST={{HOST}} \
-    PORT={{PORT}} \
-    RELOAD={{RELOAD}} \
-    ./app/entrypoint.sh
+    ABS_VENV_PATH={{ABS_VENV_PATH}} ./app/entrypoint.sh
+
 
 deploy:
     just clean
     just build
-    APP_NAME={{APP_NAME}} \
-    VENV_PATH="/{{APP_NAME}}/{{VENV}}" \
-    HOST={{HOST}} \
-    PORT={{PORT}} \
     docker-compose up
 
 stop:
@@ -67,16 +64,16 @@ stop:
 
 install:
     #!/bin/bash
-    if [ ! -d {{VENV_PATH}} ]; then
-        {{PYTHON}} -m venv {{VENV_PATH}}
+    if [ ! -d {{ABS_VENV_PATH}} ]; then
+        ${PYTHON} -m venv {{ABS_VENV_PATH}}
     fi
 
-    source {{VENV_PATH}}/bin/activate
+    source {{ABS_VENV_PATH}}/bin/activate
     pip3 install --upgrade pip
     poetry env info
     POETRY_VIRTUALENVS_CREATE=false \
-    POETRY_VIRTUALENVS_PATH={{VENV_PATH}} \
+    POETRY_VIRTUALENVS_PATH={{ABS_VENV_PATH}} \
     POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=true \
     poetry install
 
-    echo -e "\e[32m!! venv created in folder '{{VENV_PATH}}'\e[0m"
+    echo -e "\e[32m!! venv created in folder '{{ABS_VENV_PATH}}'\e[0m"

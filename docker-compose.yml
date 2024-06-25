@@ -1,21 +1,24 @@
-version: "3"
+version: "3.8"
 
 services:
   app:
     image: ${APP_NAME}:latest
-    environment:
-      - APP_NAME=${APP_NAME}
-      - VENV_PATH=${VENV_PATH}
-      - HOST=${HOST}
-      - PORT=${PORT}
+    env_file:
+      - .env
+    build:
+      context: .
+      args:
+        APP_NAME: ${APP_NAME}
+        POETRY_VERSION: ${POETRY_VERSION}
+        PYTHON_IMAGE: ${PYTHON_IMAGE}
+    depends_on:
+      - db
     ports:
-      - "${PORT}:${PORT}"
+      - ${PORT}:${PORT}
   db:
     image: postgres
-    environment:
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "admin"
-      POSTGRES_DB: "tiny"
+    env_file:
+      - .env
     volumes:
       - ./volumes/postgres_data:/var/lib/postgresql/data
     ports:
