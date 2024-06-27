@@ -15,6 +15,12 @@ services:
       - db
     ports:
       - ${PORT}:${PORT}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/ping" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
   db:
     image: postgres
     env_file:
