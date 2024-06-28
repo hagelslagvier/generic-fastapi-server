@@ -16,7 +16,7 @@ services:
     ports:
       - ${PORT}:${PORT}
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/ping" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:${PORT}/health" ]
       interval: 15s
       timeout: 10s
       retries: 5
