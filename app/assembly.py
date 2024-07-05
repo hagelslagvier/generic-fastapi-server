@@ -45,8 +45,8 @@ def assemble_db(injector: Injector) -> Injector:
 
 
 def assemble_app(injector: Injector) -> Injector:
-    from app.endpoints.users.users import router as users_router
     from app.endpoints.health.health import router as health_router
+    from app.endpoints.users.users import router as users_router
 
     users_router.injector = injector  # type: ignore
 

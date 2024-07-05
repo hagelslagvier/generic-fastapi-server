@@ -1,30 +1,33 @@
+from typing import Generator
+
 import pytest
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
 from tests.assembly import test_root_injector
 from tests.test_orm.models import User, UserCRUD
+from tests.types import SideEffect
 
 
 @pytest.fixture
-def engine():
+def engine() -> Engine:
     return test_root_injector.get(Engine)
 
 
 @pytest.fixture
-def schema(engine):
+def schema(engine: Engine) -> None:
     User.metadata.drop_all(bind=engine)
     User.metadata.create_all(bind=engine)
 
 
 @pytest.fixture
-def session(engine, schema):
+def session(engine: Engine, schema: SideEffect) -> Generator[Session, None, None]:
     with Session(bind=engine) as session:
         yield session
 
 
 @pytest.fixture
-def content(session):
+def content(session: Session) -> None:
     user_crud = UserCRUD()
     items = [
         {"name": "a", "age": 1},

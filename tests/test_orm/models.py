@@ -24,7 +24,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     age: Mapped[int] = mapped_column(Integer, nullable=True)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"User(id={self.id}, " f"name={self.name}, " f"age={self.age})"
 
 

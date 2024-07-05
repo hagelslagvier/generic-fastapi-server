@@ -7,5 +7,5 @@ app = root_injector.get(FastAPI)
 
 
 @app.on_event("startup")
-async def on_startup():
+async def on_startup() -> None:
     create_db_schema()

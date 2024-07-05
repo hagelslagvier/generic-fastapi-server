@@ -1,17 +1,25 @@
 import json
 import subprocess
+from json import JSONDecodeError
 from typing import Dict
 
 from fastapi import APIRouter
 
 
-def _mpstat():
+def _mpstat() -> Dict:
     command = "mpstat -o JSON"
     process = subprocess.run(command, shell=True, capture_output=True, text=True)
     if process.returncode != 0:
-        raise RuntimeError(process.stderr)
+        raise RuntimeError(f"Error while doing health check: {process.stderr}")
 
-    return json.loads(process.stdout)
+    try:
+        stats = json.loads(process.stdout)
+    except JSONDecodeError as error:
+        raise RuntimeError("Error while doing health check") from error
+
+    health = {"stats": stats}
+
+    return health
 
 
 router = APIRouter(

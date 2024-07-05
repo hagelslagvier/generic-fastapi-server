@@ -8,7 +8,7 @@ fix:
 
 type-check:
     mypy app/
-#    mypy tests/
+    mypy tests/
 
 test:
     pytest -s --cov=app/ --cov-report=html:tests/coverage tests/
@@ -19,9 +19,6 @@ check:
     just test
 
 clean:
-    rm -f .coverage
-    rm -rf .ruff_cache
-    rm -rf .mypy_cache
     rm -rf .pytest_cache
     find ./app ./tests -regex '^.*\(__pycache__\|\.py[co]\)$' -delete
     yes Y | docker image prune
