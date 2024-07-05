@@ -19,8 +19,10 @@ check:
     just test
 
 clean:
-    rm -rf .pytest_cache
-    find ./app ./tests -regex '^.*\(__pycache__\|\.py[co]\)$' -delete
+    find ./app ./tests \
+      -regextype posix-extended \
+      -regex '.*(/\.ruff_cache|/\.mypy_cache|/.pytest_cache|/__pycache__|\.pyc|\.pyo)$' \
+      -exec rm -rf {} +
     yes Y | docker image prune
     docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force 2>/dev/null || true
 
