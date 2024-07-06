@@ -30,4 +30,6 @@ WORKDIR /${APP_NAME}
 COPY --from=base /${APP_NAME}/.venv /${APP_NAME}/.venv
 COPY app app
 
+ENV ABS_VENV_PATH=/${APP_NAME}/.venv
+
 ENTRYPOINT ["app/entrypoint.sh"]
