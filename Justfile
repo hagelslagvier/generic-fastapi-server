@@ -3,7 +3,8 @@ set dotenv-load := true
 ABS_VENV_PATH := absolute_path(clean("${VENV}"))
 
 fix:
-    ruff check app/ tests/ --select I --fix
+    isort app/ tests/
+    ruff check app/ tests/ --extend-select I --fix
     ruff format app/ tests/
 
 type-check:
