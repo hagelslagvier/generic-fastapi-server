@@ -13,6 +13,12 @@ type-check:
 test:
     pytest -s --cov=app/ --cov-report=html:tests/coverage tests/
 
+make-migrations:
+    alembic revisions --autogenerate
+
+migrate:
+    alembic upgrade head
+
 check:
     just fix
     just type-check
