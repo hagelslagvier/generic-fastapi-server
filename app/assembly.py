@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from app.config import Config
 
 HERE = pathlib.Path(__file__)
-ENV_FILE_PATH = HERE.parent / ".env"
+ENV_FILE_PATH = HERE.parents[1] / ".env"
 
 load_dotenv(ENV_FILE_PATH)
 
