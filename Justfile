@@ -34,6 +34,7 @@ clean:
     docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force 2>/dev/null || true
 
 build:
+    just clean
     docker build \
       --build-arg=APP_NAME=${APP_NAME} \
       --build-arg=POETRY_VERSION=${POETRY_VERSION} \
@@ -41,6 +42,7 @@ build:
       -t ${APP_NAME} .
 
 rebuild:
+    just clean
     docker build \
       --build-arg=APP_NAME=${APP_NAME} \
       --build-arg=POETRY_VERSION=${POETRY_VERSION} \
