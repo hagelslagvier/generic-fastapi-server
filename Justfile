@@ -14,16 +14,16 @@ type-check:
 test:
     pytest -s --cov=app/ --cov-report=html:tests/coverage tests/
 
-make-migrations:
-    alembic revisions --autogenerate
-
-migrate:
-    alembic upgrade head
-
 check:
     just fix
     just type-check
     just test
+
+make-migrations:
+    alembic revision --autogenerate
+
+migrate:
+    alembic upgrade head
 
 clean:
     find ./app ./tests \
@@ -51,15 +51,6 @@ rebuild:
 debug:
     docker run --rm -it --entrypoint bash ${APP_NAME}
 
-run:
-    ABS_VENV_PATH={{ABS_VENV_PATH}} ./app/entrypoint.sh
-
-
-deploy:
-    just clean
-    just build
-    docker-compose up
-
 stop:
     #!/bin/bash
     export CONTAINERS=$(docker ps -aq)
@@ -83,3 +74,6 @@ install:
     poetry install
 
     echo -e "\e[32m!! venv created in folder '{{ABS_VENV_PATH}}'\e[0m"
+
+run:
+    ABS_VENV_PATH={{ABS_VENV_PATH}} ./app/entrypoint.sh
