@@ -1,5 +1,6 @@
 import os
 import pathlib
+from contextlib import asynccontextmanager
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -9,16 +10,23 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
 from app.config import Config
+from app.db.utils import migrate
 
-HERE = pathlib.Path(__file__)
-ENV_FILE_PATH = HERE.parents[1] / ".env"
+ROOT = pathlib.Path(__file__).parents[1]
+ENV_PATH = ROOT / ".env"
+ALEMBIC_CONFIG_PATH = ROOT / "app/db/alembic.ini"
+MIGRATIONS_PATH = ROOT / "app/db/migrations"
 
-load_dotenv(ENV_FILE_PATH)
+load_dotenv(ENV_PATH)
 
 
 def assemble_config(injector: Optional[Injector] = None) -> Injector:
     def make_config() -> Config:
-        return Config(db_url=os.environ["DB_URL"])
+        return Config(
+            db_url=os.environ["DB_URL"],
+            alembic_config_path=str(ALEMBIC_CONFIG_PATH),
+            db_migrations_path=str(MIGRATIONS_PATH),
+        )
 
     injector = injector or Injector()
     injector.binder.bind(Config, to=make_config)
@@ -48,9 +56,17 @@ def assemble_app(injector: Injector) -> Injector:
     from app.endpoints.health.health import router as health_router
     from app.endpoints.users.users import router as users_router
 
-    users_router.injector = injector  # type: ignore
+    config = injector.get(Config)
+
+    @asynccontextmanager  # type: ignore
+    async def lifespan(app: FastAPI) -> None:  # type: ignore
+        migrate(config=config)
+        yield
 
     def make_app() -> FastAPI:
+        users_router.injector = injector  # type: ignore
+        health_router.injector = injector  # type: ignore
+
         app = FastAPI()
         app.include_router(users_router)
         app.include_router(health_router)

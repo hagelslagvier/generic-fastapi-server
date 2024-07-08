@@ -20,10 +20,10 @@ check:
     just test
 
 make-migrations:
-    alembic revision --autogenerate
+    alembic -c app/db/alembic.ini revision --autogenerate
 
 migrate:
-    alembic upgrade head
+    alembic -c app/db/alembic.ini upgrade head
 
 clean:
     find ./app ./tests \
