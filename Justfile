@@ -1,4 +1,6 @@
-set dotenv-load := true
+set allow-duplicate-variables := true
+set dotenv-filename := ".env.base"
+
 
 ABS_VENV_PATH := absolute_path(clean("${VENV}"))
 
@@ -53,6 +55,15 @@ rebuild:
 debug:
     docker run --rm -it --entrypoint bash ${APP_NAME}
 
+run:
+    docker-compose --env-file .env.dev up db
+
+deploy:
+    docker-compose --env-file .env.prod up
+
+health-check:
+    docker-compose --env-file .env.prod ps
+
 stop:
     #!/bin/bash
     export CONTAINERS=$(docker ps -aq)
@@ -76,6 +87,3 @@ install:
     poetry install
 
     echo -e "\e[32m!! venv created in folder '{{ABS_VENV_PATH}}'\e[0m"
-
-run:
-    ABS_VENV_PATH={{ABS_VENV_PATH}} ./app/entrypoint.sh
