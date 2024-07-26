@@ -1,12 +1,21 @@
+import sys
+from pathlib import Path
+
 import uvicorn
-from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from app.assembly import root_injector
+ROOT = Path(__file__).parents[1]
 
-load_dotenv()
+sys.path.append(str(ROOT))
+
+
+from app.assembly import root_injector  # noqa: E402
 
 app = root_injector.get(FastAPI)
 
+
 if __name__ == "__main__":
-    uvicorn.run("run:app", host="0.0.0.0", port=8000, reload=True)
+    from app.config import Config
+
+    config = root_injector.get(Config)
+    uvicorn.run("run:app", host=config.host, port=config.port, reload=config.reload)
