@@ -11,6 +11,7 @@ RUN pip3 install --upgrade pip \
     && pip3 install poetry==${POETRY_VERSION}
 
 WORKDIR /${APP_NAME}
+
 COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
 
@@ -23,13 +24,14 @@ FROM ${PYTHON_IMAGE}
 
 ARG APP_NAME
 
-RUN apt-get update -y
+RUN apt update -y \
+    && apt install sysstat -y
 
 WORKDIR /${APP_NAME}
 
 COPY --from=base /${APP_NAME}/.venv /${APP_NAME}/.venv
 COPY app app
+COPY .env.base .env.base
+COPY .env.prod .env
 
-ENV ABS_VENV_PATH=/${APP_NAME}/.venv
-
-ENTRYPOINT ["app/entrypoint.sh"]
+CMD [ ".venv/bin/python",  "app/run.py" ]

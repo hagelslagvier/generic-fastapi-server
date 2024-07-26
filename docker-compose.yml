@@ -1,10 +1,9 @@
-version: "3.8"
+version: "3"
 
 services:
   app:
+    container_name: ${APP_NAME}
     image: ${APP_NAME}:latest
-    env_file:
-      - .env
     build:
       context: .
       args:
@@ -13,18 +12,23 @@ services:
         PYTHON_IMAGE: ${PYTHON_IMAGE}
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl --fail http://0.0.0.0:8000/health/ || exit 1"]
+      interval: 5s
+      start_period: 1s
+      timeout: 1s
+      retries: 1
+
+    env_file:
+      - .env.prod
     ports:
       - ${PORT}:${PORT}
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:${PORT}/health" ]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-      start_period: 5s
+
   db:
+    container_name: db
     image: postgres
     env_file:
-      - .env
+      - .env.base
     volumes:
       - ./volumes/postgres_data:/var/lib/postgresql/data
     ports:
