@@ -1,44 +1,46 @@
-from typing import Any, Dict, Generator, Generic, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Generator, Optional, Type, TypeVar, Union
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.errors import DoesNotExistError
+from app.db.orm.crud.interfaces import CRUDInterface
 
-MT = TypeVar("MT")  # ORM Model Type
+T = TypeVar("T")  # ORM Model Type
 
 
-class GenericCRUD(Generic[MT]):
-    def _get_model(self) -> Type[MT]:
+class GenericCRUD(CRUDInterface[T]):
+    def __init__(self, session: Session) -> None:
+        self.session = session
+
+    def _get_model(self) -> Type[T]:
         (bases,) = self.__orig_bases__  # type:ignore
         (model,) = bases.__args__
 
         return model  # type:ignore
 
-    def count(self, session: Session) -> int:
+    def count(self) -> int:
         model = self._get_model()
         query = select(func.count()).select_from(model)
-        count = session.execute(query).scalar() or 0
+        count = self.session.execute(query).scalar() or 0
 
         return count
 
-    def create(self, session: Session, payload: Dict[str, Any]) -> MT:
+    def create(self, payload: Dict[str, Any]) -> T:
         model = self._get_model()
 
         instance = model(**payload)
 
-        session.add(instance)
-        session.commit()
-        session.refresh(instance)
+        self.session.add(instance)
+        self.session.commit()
+        self.session.refresh(instance)
 
         return instance
 
-    def get(
-        self, session: Session, id: Union[int, str]
-    ) -> MT:  # TODO: rename -> read_one
+    def read(self, id: Union[int, str]) -> T:  # TODO: rename -> read_one
         model = self._get_model()
 
-        instance = session.get(model, id)
+        instance = self.session.get(model, id)
 
         if not instance:
             raise DoesNotExistError(
@@ -47,14 +49,13 @@ class GenericCRUD(Generic[MT]):
 
         return instance
 
-    def read(  # TODO: rename -> read_many
+    def read_many(  # TODO: rename -> read_many
         self,
-        session: Session,
         where: Optional[Any] = None,
         order_by: Optional[Any] = None,
         take: int = 10,
         skip: int = 0,
-    ) -> Generator[MT, None, None]:
+    ) -> Generator[T, None, None]:
         model = self._get_model()
 
         query = select(model)
@@ -70,28 +71,26 @@ class GenericCRUD(Generic[MT]):
         if take:
             query = query.limit(take)
 
-        items = (item for item in session.execute(query).scalars())
+        items = (item for item in self.session.execute(query).scalars())
 
         return items
 
-    def update(
-        self, session: Session, id: Union[int, str], payload: Dict[str, Any]
-    ) -> MT:
-        instance = self.get(session=session, id=id)
+    def update(self, id: Union[int, str], payload: Dict[str, Any]) -> T:
+        instance = self.read(id=id)
 
         for k, v in payload.items():
             setattr(instance, k, v)
 
-        session.add(instance)
-        session.commit()
-        session.refresh(instance)
+        self.session.add(instance)
+        self.session.commit()
+        self.session.refresh(instance)
 
         return instance
 
-    def delete(self, session: Session, id: Union[int, str]) -> MT:
-        instance = self.get(session=session, id=id)
+    def delete(self, id: Union[int, str]) -> T:
+        instance = self.read(id=id)
 
-        session.delete(instance)
-        session.commit()
+        self.session.delete(instance)
+        self.session.commit()
 
         return instance
