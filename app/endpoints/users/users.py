@@ -20,7 +20,7 @@ def read_many(
     take: int = 5,
     injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> List[UserSchemaOutput]:
-    users = UserCRUD().read(session=injector.get(Session), skip=skip, take=take)
+    users = UserCRUD(session=injector.get(Session)).read_many(skip=skip, take=take)
     response = [UserSchemaOutput(**user.__dict__) for user in users]
     return response
 
@@ -30,7 +30,7 @@ def read_one(
     id: int,
     injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> UserSchemaOutput:
-    user = UserCRUD().get(session=injector.get(Session), id=id)
+    user = UserCRUD(session=injector.get(Session)).read(id=id)
     response = UserSchemaOutput(**user.__dict__)
 
     return response
@@ -41,8 +41,8 @@ def create(
     user_schema: UserSchemaInput,
     injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> UserSchemaOutput:
-    user = UserCRUD().create(
-        session=injector.get(Session), payload=user_schema.dict(exclude_none=True)
+    user = UserCRUD(session=injector.get(Session)).create(
+        payload=user_schema.dict(exclude_none=True)
     )
     response = UserSchemaOutput(**user.__dict__)
 
@@ -55,10 +55,9 @@ def put(
     user_schema: UserSchemaInput,
     injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> UserSchemaOutput:
-    user = UserCRUD().update(
+    user = UserCRUD(session=injector.get(Session)).update(
         id=id,
         payload=user_schema.dict(exclude_none=True),
-        session=injector.get(Session),
     )
     response = UserSchemaOutput(**user.__dict__)
 
@@ -70,7 +69,7 @@ def delete(
     id: int,
     injector: Injector = Depends(lambda: router.injector),  # type: ignore
 ) -> UserSchemaOutput:
-    user = UserCRUD().delete(id=id, session=injector.get(Session))
+    user = UserCRUD(session=injector.get(Session)).delete(id=id)
     response = UserSchemaOutput(**user.__dict__)
 
     return response

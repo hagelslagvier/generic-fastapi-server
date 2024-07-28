@@ -21,10 +21,9 @@ def db() -> None:
 def content(db: SideEffect) -> None:
     session = test_root_injector.get(Session)
 
-    user_crud = UserCRUD()
+    user_crud = UserCRUD(session=session)
     for index in range(5):
         user_crud.create(
-            session=session,
             payload={
                 "login": f"foo_{index}",
                 "password": f"bar_{index}",

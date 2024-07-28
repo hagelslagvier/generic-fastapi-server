@@ -28,7 +28,7 @@ def session(engine: Engine, schema: SideEffect) -> Generator[Session, None, None
 
 @pytest.fixture
 def content(session: Session) -> None:
-    user_crud = UserCRUD()
+    user_crud = UserCRUD(session=session)
     items = [
         {"name": "a", "age": 1},
         {"name": "b", "age": 2},
@@ -42,4 +42,4 @@ def content(session: Session) -> None:
         {"name": "j", "age": 10},
     ]
     for item in items:
-        user_crud.create(session=session, payload=item)
+        user_crud.create(payload=item)
