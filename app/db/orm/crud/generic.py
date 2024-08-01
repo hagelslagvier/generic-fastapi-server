@@ -37,7 +37,7 @@ class GenericCRUD(CRUDInterface[T]):
 
         return instance
 
-    def read(self, id: Union[int, str]) -> T:  # TODO: rename -> read_one
+    def read(self, id: Union[int, str]) -> T:
         model = self._get_model()
 
         instance = self.session.get(model, id)
@@ -49,7 +49,7 @@ class GenericCRUD(CRUDInterface[T]):
 
         return instance
 
-    def read_many(  # TODO: rename -> read_many
+    def read_many(
         self,
         where: Optional[Any] = None,
         order_by: Optional[Any] = None,
