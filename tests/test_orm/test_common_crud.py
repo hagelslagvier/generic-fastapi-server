@@ -13,7 +13,7 @@ def test_if_can_count_records(session: Session, content: SideEffect) -> None:
     assert count == 10
 
 
-def test_if_can_create_record(session: Session) -> None:
+def test_if_can_create_single_record(session: Session) -> None:
     name = "John Doe"
     age = 20
 
@@ -25,7 +25,25 @@ def test_if_can_create_record(session: Session) -> None:
     assert created.age == age
 
 
-def test_if_raises_exception_when_record_not_exist(session: Session) -> None:
+def test_if_can_create_multiple_records(session: Session) -> None:
+    name = "John Doe"
+    age = 20
+
+    payload = [{"name": f"{name}_{index}", "age": age + index} for index in range(0, 5)]
+
+    user_crud = UserCRUD(session=session)
+
+    created = user_crud.create_many(payload=payload)
+
+    for item, created in zip(payload, created):
+        assert all([created.id, created.created_on, created.updated_on])
+        assert created.name == item["name"]
+        assert created.age == item["age"]
+
+
+def test_if_raises_exception_when_retrieves_nonexistent_record(
+    session: Session,
+) -> None:
     user_crud = UserCRUD(session=session)
 
     with pytest.raises(DoesNotExistError) as error:
@@ -37,7 +55,7 @@ def test_if_raises_exception_when_record_not_exist(session: Session) -> None:
     )
 
 
-def test_if_can_get_record(session: Session) -> None:
+def test_if_can_read_single_record(session: Session) -> None:
     name = "John Doe"
     age = 20
 
@@ -52,7 +70,7 @@ def test_if_can_get_record(session: Session) -> None:
     assert retrieved.age == age
 
 
-def test_if_can_read_records(session: Session, content: SideEffect) -> None:
+def test_if_can_read_multiple_records(session: Session, content: SideEffect) -> None:
     user_crud = UserCRUD(session=session)
 
     retrieved = user_crud.read_many()

@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generator, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Generator, List, Optional, Sequence, Type, TypeVar, Union
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -36,6 +36,19 @@ class GenericCRUD(CRUDInterface[T]):
         self.session.refresh(instance)
 
         return instance
+
+    def create_many(self, payload: List[Dict[str, Any]]) -> Sequence[T]:
+        model = self._get_model()
+
+        instances = [model(**item) for item in payload]
+
+        self.session.add_all(instances)
+        self.session.commit()
+
+        for instance in instances:
+            self.session.refresh(instance)
+
+        return instances
 
     def read(self, id: Union[int, str]) -> T:
         model = self._get_model()
