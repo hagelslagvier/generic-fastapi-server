@@ -1,13 +1,13 @@
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional, TypeAlias
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from injector import Injector
 from sqlalchemy import Engine, create_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import Config
 from app.db.utils import migrate
@@ -22,6 +22,9 @@ for path in [
 ]:  # in Dockerfile, ENV_DEV_PATH (.env.dev) is not copied to the image
     if path.exists() and path.is_file():
         load_dotenv(path)
+
+
+SessionFactory: TypeAlias = Callable[[], Session]
 
 
 def assemble_config(injector: Optional[Injector] = None) -> Injector:
@@ -50,11 +53,15 @@ def assemble_db(injector: Injector) -> Injector:
 
     def make_session() -> Session:
         engine = injector.get(Engine)
-        session = Session(bind=engine)
-
-        return session
+        return Session(bind=engine)
 
     injector.binder.bind(Session, to=make_session)
+
+    def make_session_factory() -> SessionFactory:
+        engine = injector.get(Engine)
+        return sessionmaker(bind=engine)
+
+    injector.binder.bind(SessionFactory, to=make_session_factory)
 
     return injector
 

@@ -1,9 +1,9 @@
 import pytest
 from fastapi import FastAPI
 from sqlalchemy import Engine
-from sqlalchemy.orm import Session
 from starlette.testclient import TestClient
 
+from app.assembly import SessionFactory
 from app.db.orm.crud.common import UserCRUD
 from app.db.orm.models import Base
 from tests.assembly import test_root_injector
@@ -19,20 +19,17 @@ def db() -> None:
 
 @pytest.fixture
 def content(db: SideEffect) -> None:
-    session = test_root_injector.get(Session)
-
-    user_crud = UserCRUD(session=session)
-    for index in range(5):
-        user_crud.create(
-            payload={
-                "login": f"foo_{index}",
-                "password": f"bar_{index}",
-            },
-        )
+    payload = [
+        {"login": f"foo_{index}", "password": f"bar_{index}"} for index in range(5)
+    ]
+    session_factory = test_root_injector.get(SessionFactory)
+    with session_factory() as session:
+        user_crud = UserCRUD(session=session)
+        user_crud.create_many(payload=payload)
 
 
 @pytest.fixture
-def test_client(db: SideEffect, content: SideEffect) -> TestClient:
+def test_client(content: SideEffect) -> TestClient:
     app = test_root_injector.get(FastAPI)
     client = TestClient(app)
 
