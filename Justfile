@@ -1,4 +1,3 @@
-set allow-duplicate-variables := true
 set dotenv-filename := ".env.base"
 
 
@@ -56,13 +55,13 @@ debug:
     docker run --rm -it --entrypoint bash ${APP_NAME}
 
 run:
-    docker-compose --env-file .env.dev up db
+    docker compose --env-file .env.dev up db
 
 deploy:
-    docker-compose --env-file .env.prod up
+    docker compose --env-file .env.prod up
 
 health-check:
-    docker-compose --env-file .env.prod ps
+    docker compose --env-file .env.prod ps
 
 stop:
     #!/bin/bash
