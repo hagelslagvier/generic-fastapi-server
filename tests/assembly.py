@@ -24,8 +24,8 @@ def assemble_test_config(injector: Optional[Injector]) -> Injector:
     def make_config() -> Config:
         return Config(
             host=os.getenv("HOST", ""),
-            port=os.getenv("PORT", 0),  # type: ignore
-            reload=os.getenv("RELOAD", False),  # type: ignore
+            port=os.getenv("PORT", 0),
+            reload=os.getenv("RELOAD", False),
             db_url=os.getenv("TEST_DB_URL", ""),
             alembic_config_path=os.getenv("ALEMBIC_CONFIG_PATH", ""),
             db_migrations_path=os.getenv("MIGRATIONS_PATH", ""),
