@@ -15,7 +15,6 @@ services:
     healthcheck:
       test: ["CMD", "curl --fail http://0.0.0.0:8000/health/ || exit 1"]
       interval: 5s
-      start_period: 1s
       timeout: 1s
       retries: 1
 
