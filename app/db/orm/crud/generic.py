@@ -37,7 +37,7 @@ class GenericCRUD(CRUDInterface[T]):
 
         return instance
 
-    def create_many(self, payload: List[Dict[str, Any]]) -> Sequence[T]:
+    def create_many(self, payload: Sequence[Dict[str, Any]]) -> Sequence[T]:
         model = self._get_model()
 
         instances = [model(**item) for item in payload]

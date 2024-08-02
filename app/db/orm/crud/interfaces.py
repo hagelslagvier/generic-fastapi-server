@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generator, Generic, List, Optional, TypeVar, Union
+from typing import Any, Dict, Generator, Generic, List, Optional, TypeVar, Union, Sequence
 
 T = TypeVar("T")
 
@@ -14,7 +14,7 @@ class CRUDInterface(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    def create_many(self, payload: List[Dict[str, Any]]) -> T:
+    def create_many(self, payload: Sequence[Dict[str, Any]]) -> Sequence[T]:
         pass
 
     @abstractmethod

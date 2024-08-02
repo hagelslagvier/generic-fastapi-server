@@ -1,4 +1,5 @@
 import os
+import typing
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Callable, Optional, TypeAlias
@@ -16,6 +17,8 @@ ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"
 ENV_DEV_PATH = ROOT_PATH / ".env.dev"
 
+from injector import CallableProvider
+
 for path in [
     ENV_BASE_PATH,
     ENV_DEV_PATH,
@@ -24,7 +27,7 @@ for path in [
         load_dotenv(path)
 
 
-SessionFactory: TypeAlias = Callable[[], Session]
+SessionFactory = Callable[[], Session]
 
 
 def assemble_config(injector: Optional[Injector] = None) -> Injector:
