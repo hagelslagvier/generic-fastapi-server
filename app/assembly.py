@@ -1,7 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Optional
+from typing import AsyncGenerator, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -71,8 +71,8 @@ def assemble_app(injector: Injector) -> Injector:
 
     config = injector.get(Config)
 
-    @asynccontextmanager  # type: ignore
-    async def lifespan(app: FastAPI) -> None:  # type: ignore
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncGenerator:
         migrate(config=config)
         yield
 
