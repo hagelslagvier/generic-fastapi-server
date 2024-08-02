@@ -1,11 +1,12 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import Depends
 from injector import Injector
 from pydantic import NonNegativeInt
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.common import UserCRUD
+from app.endpoints.extra import Router as APIRouter
 from app.endpoints.users.schema import UserSchemaInput, UserSchemaOutput
 
 router = APIRouter(

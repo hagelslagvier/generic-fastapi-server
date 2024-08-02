@@ -3,7 +3,7 @@ import subprocess
 from json import JSONDecodeError
 from typing import Dict
 
-from fastapi import APIRouter
+from app.endpoints.extra import Router as APIRouter
 
 
 def _mpstat() -> Dict:
