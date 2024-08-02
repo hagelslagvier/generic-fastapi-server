@@ -15,6 +15,11 @@ type-check:
 test:
     pytest -s --cov=app/ --cov-report=html:tests/coverage tests/
 
+show-coverage:
+    #!/usr/bin/env python3
+    import webbrowser
+    webbrowser.open("tests/coverage/index.html")
+
 check:
     just fix
     just type-check
@@ -33,6 +38,7 @@ clean:
       -exec rm -rf {} +
     yes Y | docker image prune
     docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force 2>/dev/null || true
+    rm -rf tests/coverage
 
 build:
     just clean
