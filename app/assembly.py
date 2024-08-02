@@ -1,23 +1,22 @@
 import os
-import typing
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Callable, Optional, TypeAlias
+from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from injector import Injector
 from sqlalchemy import Engine, create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 
 from app.config import Config
+from app.db.orm.crud.generic import SessionFactory
+from app.db.orm.crud.interfaces import SessionFactoryInterface
 from app.db.utils import migrate
 
 ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"
 ENV_DEV_PATH = ROOT_PATH / ".env.dev"
-
-from injector import CallableProvider
 
 for path in [
     ENV_BASE_PATH,
@@ -25,9 +24,6 @@ for path in [
 ]:  # in Dockerfile, ENV_DEV_PATH (.env.dev) is not copied to the image
     if path.exists() and path.is_file():
         load_dotenv(path)
-
-
-SessionFactory = Callable[[], Session]
 
 
 def assemble_config(injector: Optional[Injector] = None) -> Injector:
@@ -60,11 +56,11 @@ def assemble_db(injector: Injector) -> Injector:
 
     injector.binder.bind(Session, to=make_session)
 
-    def make_session_factory() -> SessionFactory:
+    def make_session_factory() -> SessionFactoryInterface:
         engine = injector.get(Engine)
-        return sessionmaker(bind=engine)
+        return SessionFactory(bind=engine)
 
-    injector.binder.bind(SessionFactory, to=make_session_factory)
+    injector.binder.bind(SessionFactoryInterface, to=make_session_factory)  # type: ignore[type-abstract]
 
     return injector
 
@@ -81,8 +77,8 @@ def assemble_app(injector: Injector) -> Injector:
         yield
 
     def make_app() -> FastAPI:
-        users_router.injector = injector  # type: ignore
-        health_router.injector = injector  # type: ignore
+        users_router.injector = injector
+        health_router.injector = injector
 
         app = FastAPI()
         app.include_router(users_router)

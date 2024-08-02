@@ -35,10 +35,10 @@ def test_if_can_create_multiple_records(session: Session) -> None:
 
     created = user_crud.create_many(payload=payload)
 
-    for item, created in zip(payload, created):
-        assert all([created.id, created.created_on, created.updated_on])
-        assert created.name == item["name"]
-        assert created.age == item["age"]
+    for payload_item, instance in zip(payload, created):
+        assert all([instance.id, instance.created_on, instance.updated_on])
+        assert instance.name == payload_item["name"]
+        assert instance.age == payload_item["age"]
 
 
 def test_if_raises_exception_when_retrieves_nonexistent_record(

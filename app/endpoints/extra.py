@@ -1,5 +1,6 @@
-from fastapi import APIRouter
 from typing import Any, Optional
+
+from fastapi import APIRouter
 from injector import Injector
 
 

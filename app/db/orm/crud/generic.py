@@ -1,12 +1,20 @@
-from typing import Any, Dict, Generator, List, Optional, Sequence, Type, TypeVar, Union
+from typing import Any, Dict, Generator, Optional, Sequence, Type, TypeVar, Union
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy import Engine, func, select
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.db.orm.crud.errors import DoesNotExistError
-from app.db.orm.crud.interfaces import CRUDInterface
+from app.db.orm.crud.interfaces import CRUDInterface, SessionFactoryInterface
 
 T = TypeVar("T")  # ORM Model Type
+
+
+class SessionFactory(SessionFactoryInterface):
+    def __init__(self, bind: Engine) -> None:
+        self.factory = sessionmaker(bind=bind)
+
+    def make(self) -> Session:
+        return self.factory()
 
 
 class GenericCRUD(CRUDInterface[T]):
