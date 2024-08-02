@@ -19,7 +19,7 @@ router = APIRouter(
 def read_many(
     skip: NonNegativeInt = 0,
     take: int = 5,
-    injector: Injector = Depends(lambda: router.injector),  # type: ignore
+    injector: Injector = Depends(lambda: router.injector),
 ) -> List[UserSchemaOutput]:
     users = UserCRUD(session=injector.get(Session)).read_many(skip=skip, take=take)
     response = [UserSchemaOutput(**user.__dict__) for user in users]
@@ -29,7 +29,7 @@ def read_many(
 @router.get("/{id}")
 def read_one(
     id: int,
-    injector: Injector = Depends(lambda: router.injector),  # type: ignore
+    injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).read(id=id)
     response = UserSchemaOutput(**user.__dict__)
@@ -40,7 +40,7 @@ def read_one(
 @router.post("/")
 def create(
     user_schema: UserSchemaInput,
-    injector: Injector = Depends(lambda: router.injector),  # type: ignore
+    injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).create(
         payload=user_schema.dict(exclude_none=True)
@@ -54,7 +54,7 @@ def create(
 def put(
     id: int,
     user_schema: UserSchemaInput,
-    injector: Injector = Depends(lambda: router.injector),  # type: ignore
+    injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).update(
         id=id,
@@ -68,7 +68,7 @@ def put(
 @router.delete("/{id}")
 def delete(
     id: int,
-    injector: Injector = Depends(lambda: router.injector),  # type: ignore
+    injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).delete(id=id)
     response = UserSchemaOutput(**user.__dict__)
