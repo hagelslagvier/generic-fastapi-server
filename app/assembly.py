@@ -13,6 +13,9 @@ from app.config import Config
 from app.db.orm.crud.generic import SessionFactory
 from app.db.orm.crud.interfaces import SessionFactoryInterface
 from app.db.utils import migrate
+from app.endpoints.custom import App
+from app.endpoints.health.health import router as health_router
+from app.endpoints.users.users import router as users_router
 
 ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"
@@ -66,9 +69,6 @@ def assemble_db(injector: Injector) -> Injector:
 
 
 def assemble_app(injector: Injector) -> Injector:
-    from app.endpoints.health.health import router as health_router
-    from app.endpoints.users.users import router as users_router
-
     config = injector.get(Config)
 
     @asynccontextmanager
@@ -76,11 +76,8 @@ def assemble_app(injector: Injector) -> Injector:
         migrate(config=config)
         yield
 
-    def make_app() -> FastAPI:
-        users_router.injector = injector
-        health_router.injector = injector
-
-        app = FastAPI()
+    def make_app() -> App:
+        app = App(injector=injector)
         app.include_router(users_router)
         app.include_router(health_router)
 

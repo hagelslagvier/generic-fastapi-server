@@ -3,7 +3,7 @@ import subprocess
 from json import JSONDecodeError
 from typing import Dict
 
-from app.endpoints.extra import Router as APIRouter
+from app.endpoints.custom import Router
 
 
 def _mpstat() -> Dict:
@@ -22,7 +22,7 @@ def _mpstat() -> Dict:
     return health
 
 
-router = APIRouter(
+router = Router(
     prefix="/health",
     tags=["health"],
 )

@@ -6,10 +6,10 @@ from pydantic import NonNegativeInt, PositiveInt
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.common import UserCRUD
-from app.endpoints.extra import Router as APIRouter
+from app.endpoints.custom import Router
 from app.endpoints.users.schema import UserSchemaInput, UserSchemaOutput
 
-router = APIRouter(
+router = Router(
     prefix="/users",
     tags=["users"],
 )
