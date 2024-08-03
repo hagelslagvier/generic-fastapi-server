@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import Depends
 from injector import Injector
-from pydantic import NonNegativeInt
+from pydantic import NonNegativeInt, PositiveInt
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.common import UserCRUD
@@ -18,7 +18,7 @@ router = APIRouter(
 @router.get("/")
 def read_many(
     skip: NonNegativeInt = 0,
-    take: int = 5,
+    take: PositiveInt = 5,
     injector: Injector = Depends(lambda: router.injector),
 ) -> List[UserSchemaOutput]:
     users = UserCRUD(session=injector.get(Session)).read_many(skip=skip, take=take)
