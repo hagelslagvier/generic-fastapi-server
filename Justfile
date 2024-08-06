@@ -92,3 +92,6 @@ install:
     poetry install
 
     echo -e "\e[32m!! venv created in folder '{{ABS_VENV_PATH}}'\e[0m"
+
+#  TODO: add publish
+#  TODO: add make-erm
