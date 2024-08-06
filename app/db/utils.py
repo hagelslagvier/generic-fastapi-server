@@ -1,3 +1,5 @@
+from typing import Optional
+
 from alembic import command
 from alembic.config import Config as AlembicConfig
 
@@ -10,3 +12,7 @@ def migrate(config: AppConfig) -> None:
     alembic_config.set_main_option("sqlalchemy.url", config.db_url)
 
     command.upgrade(alembic_config, "head")
+
+
+def create_super_user(login: str, password: str, email: Optional[str] = None) -> None:  # TODO: implement
+    pass
