@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
-from injector import Injector
+from injector import Injector, singleton
 from sqlalchemy import Engine, StaticPool, create_engine
 from sqlalchemy.orm import Session
 
@@ -39,7 +39,7 @@ def assemble_test_config(injector: Optional[Injector]) -> Injector:
     return injector
 
 
-def assemble_db(injector: Injector) -> Injector:
+def assemble_test_db(injector: Injector) -> Injector:
     def make_engine() -> Engine:
         config = injector.get(Config)
         return create_engine(
@@ -48,7 +48,7 @@ def assemble_db(injector: Injector) -> Injector:
             poolclass=StaticPool,
         )
 
-    injector.binder.bind(Engine, to=make_engine)
+    injector.binder.bind(Engine, to=make_engine, scope=singleton)
 
     def make_session() -> Session:
         engine = injector.get(Engine)
@@ -61,5 +61,5 @@ def assemble_db(injector: Injector) -> Injector:
 
 test_root_injector = Injector()
 assemble_test_config(test_root_injector)
-assemble_db(test_root_injector)
+assemble_test_db(test_root_injector)
 assemble_app(test_root_injector)
