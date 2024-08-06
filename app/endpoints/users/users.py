@@ -33,7 +33,6 @@ def read_one(
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).read(id=id)
     response = UserSchemaOutput(**user.__dict__)
-
     return response
 
 
@@ -46,7 +45,6 @@ def create(
         payload=user_schema.dict(exclude_none=True)
     )
     response = UserSchemaOutput(**user.__dict__)
-
     return response
 
 
@@ -58,10 +56,9 @@ def put(
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).update(
         id=id,
-        payload=user_schema.dict(exclude_none=True),
+        payload=user_schema.dict(),
     )
     response = UserSchemaOutput(**user.__dict__)
-
     return response
 
 
@@ -72,5 +69,4 @@ def delete(
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).delete(id=id)
     response = UserSchemaOutput(**user.__dict__)
-
     return response
