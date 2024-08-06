@@ -4,8 +4,10 @@ from typing import Optional
 
 from dotenv import load_dotenv
 from injector import Injector
+from sqlalchemy import Engine, StaticPool, create_engine
+from sqlalchemy.orm import Session
 
-from app.assembly import assemble_app, assemble_db
+from app.assembly import assemble_app
 from app.config import Config
 
 ROOT_PATH = Path(__file__).parents[1]
@@ -33,6 +35,26 @@ def assemble_test_config(injector: Optional[Injector]) -> Injector:
 
     injector = injector or Injector()
     injector.binder.bind(Config, to=make_config)
+
+    return injector
+
+
+def assemble_db(injector: Injector) -> Injector:
+    def make_engine() -> Engine:
+        config = injector.get(Config)
+        return create_engine(
+            url=config.db_url,
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
+        )
+
+    injector.binder.bind(Engine, to=make_engine)
+
+    def make_session() -> Session:
+        engine = injector.get(Engine)
+        return Session(bind=engine)
+
+    injector.binder.bind(Session, to=make_session)
 
     return injector
 
