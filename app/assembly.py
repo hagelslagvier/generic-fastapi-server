@@ -10,8 +10,6 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
 from app.config import Config
-from app.db.orm.crud.generic import SessionFactory
-from app.db.orm.crud.interfaces import SessionFactoryInterface
 from app.db.utils import migrate
 from app.endpoints.custom import App
 from app.endpoints.health.health import router as health_router
@@ -58,12 +56,6 @@ def assemble_db(injector: Injector) -> Injector:
         return Session(bind=engine)
 
     injector.binder.bind(Session, to=make_session)
-
-    def make_session_factory() -> SessionFactoryInterface:
-        engine = injector.get(Engine)
-        return SessionFactory(bind=engine)
-
-    injector.binder.bind(SessionFactoryInterface, to=make_session_factory)  # type: ignore[type-abstract]
 
     return injector
 
