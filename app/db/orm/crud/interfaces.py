@@ -1,15 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Generator, Generic, Optional, Sequence, TypeVar, Union
 
-from sqlalchemy.orm import Session
-
 T = TypeVar("T")
-
-
-class SessionFactoryInterface(ABC):
-    @abstractmethod
-    def make(self) -> Session:
-        pass
 
 
 class CRUDInterface(ABC, Generic[T]):
@@ -34,8 +26,8 @@ class CRUDInterface(ABC, Generic[T]):
         self,
         where: Optional[Any] = None,
         order_by: Optional[Any] = None,
-        take: int = 10,
         skip: int = 0,
+        take: int = 10,
     ) -> Generator[T, None, None]:
         pass
 
