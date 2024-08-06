@@ -1,5 +1,5 @@
-from sqlalchemy import Boolean, DateTime, Integer, String, func
-from sqlalchemy.orm import DeclarativeBase, mapped_column
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, func
+from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -17,11 +17,25 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "users"
 
-    login = mapped_column(String, unique=True, nullable=False)
-    password = mapped_column(String, nullable=False)
+    login = mapped_column(String(64), unique=True, nullable=False)
+    password = mapped_column(String(64), nullable=False)
+    email = mapped_column(String(64), nullable=False)
+    is_email_confirmed = mapped_column(Boolean, default=False)
     refresh_token = mapped_column(String, nullable=True)
     access_token = mapped_column(String, nullable=True)
     is_admin = mapped_column(Boolean, default=False)
+    confirmation = relationship("Confirmation", back_populates="user", uselist=False)
 
     def __repr__(self) -> str:
         return f"User(id={self.id}, login={self.login}, is_admin={self.is_admin})"
+
+
+class Confirmation(Base):
+    __tablename__ = "confirmations"
+
+    confirmation_code = mapped_column(String, nullable=False)
+    user_id = mapped_column(ForeignKey("users.id"), nullable=True)
+    user = relationship("User", back_populates="confirmation")
+
+    def __repr__(self) -> str:
+        return f"Confirmation(id={self.id}, user={self.user})"
