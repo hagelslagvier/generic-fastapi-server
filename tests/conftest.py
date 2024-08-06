@@ -22,6 +22,6 @@ def engine() -> Generator[Engine, None, None]:
 
 
 @pytest.fixture
-def session(engine) -> Generator[Session, None, None]:
+def session(engine: Engine) -> Generator[Session, None, None]:
     with session_factory(bind=engine) as session:
         yield session
