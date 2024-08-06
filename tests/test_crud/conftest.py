@@ -1,30 +1,8 @@
-from typing import Generator
-
 import pytest
 from sqlalchemy import Engine
-from sqlalchemy.orm import Session
 
 from app.db.orm.crud.generic import session_factory
-from tests.assembly import test_root_injector
 from tests.test_crud.generic_crud import GroupCRUD, StudentCRUD
-from tests.test_crud.generic_models import Base
-
-
-@pytest.yield_fixture
-def engine() -> Generator[Engine, None, None]:
-    engine = test_root_injector.get(Engine)
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    yield engine
-
-
-@pytest.yield_fixture
-def session() -> Generator[Session, None, None]:
-    session = test_root_injector.get(Session)
-    try:
-        yield session
-    finally:
-        session.close()
 
 
 @pytest.fixture
