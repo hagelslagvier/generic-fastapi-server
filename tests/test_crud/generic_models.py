@@ -10,10 +10,13 @@ class Base(DeclarativeBase):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     created_on: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=func.now()
+        DateTime(timezone=True),
+        default=func.now(),  # TODO: fix defaults
     )
     updated_on: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=func.now(), onupdate=func.now()
+        DateTime(timezone=True),
+        default=func.now(),
+        onupdate=func.now(),  # TODO: fix defaults
     )
 
 
@@ -21,7 +24,9 @@ class Group(Base):
     __tablename__ = "groups"
 
     code: Mapped[str] = mapped_column(String(8), unique=True, nullable=False)
-    students: Mapped[List["Student"]] = relationship(back_populates="group")
+    students: Mapped[List["Student"]] = relationship(
+        back_populates="group"
+    )  # TODO: sort students
 
     def __repr__(self) -> str:
         return f"Group(id={self.id}, code={self.code})"

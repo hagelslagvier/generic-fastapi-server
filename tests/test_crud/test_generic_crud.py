@@ -53,7 +53,9 @@ def test_if_can_read_single_record(session: Session, content: SideEffect) -> Non
     assert retrieved.id == 1
 
 
-def test_if_can_read_multiple_records(session: Session, content: SideEffect) -> None:
+def test_if_can_read_multiple_records(
+    session: Session, content: SideEffect
+) -> None:  # TODO: split and extend
     student_crud = StudentCRUD(session=session)
 
     retrieved = student_crud.read_many()
