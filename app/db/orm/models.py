@@ -5,10 +5,13 @@ from sqlalchemy.orm import DeclarativeBase, mapped_column
 class Base(DeclarativeBase):
     __abstract__ = True
     id = mapped_column(Integer, primary_key=True)
-    created_on = mapped_column(DateTime(timezone=True), default=func.now())
+    created_on = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_on = mapped_column(
-        DateTime(timezone=True), default=func.now(), onupdate=func.now()
+        DateTime(timezone=True),
+        server_default=func.now(),
+        server_onupdate=func.now(),  # type: ignore[arg-type]
     )
+    __mapper_args__ = {"eager_defaults": True}
 
 
 class User(Base):
