@@ -14,5 +14,7 @@ def migrate(config: AppConfig) -> None:
     command.upgrade(alembic_config, "head")
 
 
-def create_super_user(login: str, password: str, email: Optional[str] = None) -> None:  # TODO: implement
+def create_super_user(
+    login: str, password: str, email: Optional[str] = None
+) -> None:  # TODO: implement
     pass
