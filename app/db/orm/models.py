@@ -27,7 +27,7 @@ class User(Base):
     confirmation = relationship("Confirmation", back_populates="user", uselist=False)
 
     def __repr__(self) -> str:
-        return f"User(id={self.id}, login={self.login}, is_admin={self.is_admin})"
+        return f"User(id={self.id}, login={self.login}, email={self.email}, is_admin={self.is_admin})"
 
 
 class Confirmation(Base):
