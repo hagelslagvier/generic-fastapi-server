@@ -4,9 +4,58 @@ from sqlalchemy.orm import Session
 
 from app.db.orm.crud.errors import DoesNotExistError
 from app.db.orm.crud.generic import session_factory
-from tests.test_crud.generic_crud import GroupCRUD, StudentCRUD
+from tests.test_crud.generic_crud import Dummy, GroupCRUD, StudentCRUD
 from tests.test_crud.generic_models import Group, Student
 from tests.types import SideEffect
+
+
+@pytest.mark.parametrize(
+    "attrs,expected",
+    [
+        ({}, {}),
+        ({"id": 1}, {}),
+        ({"id": 1, "foo": "spam"}, {"foo": "spam"}),
+        (
+            {"id": 1, "foo": "spam", "bar": "eggs", "baz": "ham"},
+            {"foo": "spam", "bar": "eggs", "baz": "ham"},
+        ),
+    ],
+)
+def test_if_can_sanitize_unsafe_input_when_creates_instance(attrs, expected):
+    dummy = Dummy.new(**attrs)
+
+    for k in dummy._get_primary_key():
+        assert k not in dummy.__dict__
+
+    for k in expected:
+        assert k in dummy.__dict__
+
+
+@pytest.mark.parametrize(
+    "attrs,expected",
+    [
+        ({}, {}),
+        ({"id": 1}, {}),
+        ({"id": 1, "foo": "spam"}, {"foo": "spam"}),
+        (
+            {"id": 1, "foo": "spam", "bar": "eggs", "baz": "ham"},
+            {"foo": "spam", "bar": "eggs", "baz": "ham"},
+        ),
+    ],
+)
+def test_if_can_sanitize_unsafe_input_when_updates_instance(attrs, expected):
+    dummy = Dummy(id=42)
+
+    pk_before = {k: dummy.__dict__.get(k) for k in dummy._get_primary_key()}
+
+    dummy.update(**attrs)
+
+    pk_after = {k: dummy.__dict__.get(k) for k in dummy._get_primary_key()}
+
+    assert pk_after == pk_before
+
+    for k, v in expected.items():
+        assert dummy.__dict__.get(k) == v
 
 
 def test_if_can_count_records(session: Session, content: SideEffect) -> None:
@@ -105,7 +154,7 @@ def test_if_can_update_record(engine: Engine) -> None:
 
     with session_factory(bind=engine) as session:
         updated = GroupCRUD(session=session).update(
-            id=created.id, payload={"code": "DEF"}
+            id=created.id, payload={"id": 42, "code": "DEF"}
         )
 
     assert updated.id == created.id

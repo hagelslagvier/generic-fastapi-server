@@ -6,8 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.db.orm.crud.errors import DoesNotExistError
 from app.db.orm.crud.interfaces import CRUDInterface
+from app.db.orm.models import Base
 
-T = TypeVar("T")  # ORM Model Type
+T = TypeVar("T", bound=Base)
 
 
 @contextmanager
@@ -38,16 +39,16 @@ class GenericCRUD(CRUDInterface[T]):
         count = self.session.execute(query).scalar() or 0
         return count
 
-    def create(self, payload: Dict[str, Any]) -> T:
+    def create(self, *, payload: Dict[str, Any]) -> T:
         model = self._get_model()
-        instance = model(**payload)
+        instance = model.new(**payload)
         self.session.add(instance)
         self.session.flush()
         return instance
 
-    def create_many(self, payload: Sequence[Dict[str, Any]]) -> Sequence[T]:
+    def create_many(self, *, payload: Sequence[Dict[str, Any]]) -> Sequence[T]:
         model = self._get_model()
-        instances = [model(**item) for item in payload]
+        instances = [model.new(**item) for item in payload]
         self.session.add_all(instances)
         self.session.flush()
         return instances
@@ -63,6 +64,7 @@ class GenericCRUD(CRUDInterface[T]):
 
     def read_many(
         self,
+        *,
         where: Optional[Any] = None,
         order_by: Optional[Any] = None,
         skip: int = 0,
@@ -81,10 +83,9 @@ class GenericCRUD(CRUDInterface[T]):
         items = (item for item in self.session.execute(query).scalars())
         return items
 
-    def update(self, id: Union[int, str], payload: Dict[str, Any]) -> T:
+    def update(self, id: Union[int, str], *, payload: Dict[str, Any]) -> T:
         instance = self.read(id=id)
-        for k, v in payload.items():
-            setattr(instance, k, v)
+        instance.update(**payload)
         self.session.add(instance)
         self.session.flush()
         return instance

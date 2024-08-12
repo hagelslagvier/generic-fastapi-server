@@ -1,23 +1,9 @@
-from datetime import datetime
 from typing import List
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, asc, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, String, asc
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-
-class Base(DeclarativeBase):
-    __abstract__ = True
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    created_on: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=func.now(),  # TODO: fix defaults
-    )
-    updated_on: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=func.now(),
-        onupdate=func.now(),  # TODO: fix defaults
-    )
+from app.db.orm.models import Base
 
 
 class Group(Base):

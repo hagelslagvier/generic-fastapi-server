@@ -1,5 +1,9 @@
+from typing import Any, List, Type, TypeVar
+
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship
+
+T = TypeVar("T", bound="Base")
 
 
 class Base(DeclarativeBase):
@@ -12,6 +16,28 @@ class Base(DeclarativeBase):
         server_onupdate=func.now(),  # type: ignore[arg-type]
     )
     __mapper_args__ = {"eager_defaults": True}
+
+    @classmethod
+    def _get_primary_key(cls) -> List[str]:
+        primary_key = [c.name for c in cls.__mapper__.primary_key]
+        return primary_key
+
+    @classmethod
+    def _get_attributes(cls) -> List[str]:
+        primary_key = set(cls._get_primary_key())
+        attrs = {c.name for c in cls.__mapper__.columns}
+        safe_attrs = list(attrs - primary_key)
+        return safe_attrs
+
+    @classmethod
+    def new(cls: Type[T], **kwargs: Any) -> T:
+        safe_kwargs = {k: v for k, v in kwargs.items() if k in cls._get_attributes()}
+        return cls(**safe_kwargs)
+
+    def update(self, **kwargs: Any) -> None:
+        safe_kwargs = {k: v for k, v in kwargs.items() if k in self._get_attributes()}
+        for k, v in safe_kwargs.items():
+            setattr(self, k, v)
 
 
 class User(Base):
