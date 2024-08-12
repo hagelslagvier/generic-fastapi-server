@@ -15,7 +15,7 @@ class StudentCRUD(GenericCRUD[Student]):
 
 
 class Dummy(Base):
-    __tablename__ = "dummy"
+    __tablename__ = "dummies"
     foo = mapped_column(String(8), unique=True, nullable=True)
     bar = mapped_column(String(8), unique=True, nullable=True)
     baz = mapped_column(String(8), unique=True, nullable=True)
