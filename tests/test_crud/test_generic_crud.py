@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 import pytest
 from sqlalchemy import Engine, and_, asc, desc, or_
 from sqlalchemy.orm import Session
@@ -21,7 +23,9 @@ from tests.types import SideEffect
         ),
     ],
 )
-def test_if_can_sanitize_unsafe_input_when_creates_instance(attrs, expected):
+def test_if_can_sanitize_unsafe_input_when_creates_instance(
+    attrs: Dict[str, Any], expected: Dict[str, Any]
+) -> None:
     dummy = Dummy.new(**attrs)
 
     for k in dummy._get_primary_key():
@@ -43,7 +47,9 @@ def test_if_can_sanitize_unsafe_input_when_creates_instance(attrs, expected):
         ),
     ],
 )
-def test_if_can_sanitize_unsafe_input_when_updates_instance(attrs, expected):
+def test_if_can_sanitize_unsafe_input_when_updates_instance(
+    attrs: Dict[str, Any], expected: Dict[str, Any]
+) -> None:
     dummy = Dummy(id=42)
 
     pk_before = {k: dummy.__dict__.get(k) for k in dummy._get_primary_key()}
@@ -68,19 +74,19 @@ def test_if_can_count_records(session: Session, content: SideEffect) -> None:
 def test_if_can_create_single_record(session: Session) -> None:
     group_crud = GroupCRUD(session=session)
 
-    created = group_crud.create(payload={"code": "ABC"})
+    created = group_crud.create(payload={"title": "ABC"})
     assert all([created.id, created.created_on, created.updated_on])
-    assert created.code == "ABC"
+    assert created.title == "ABC"
 
 
 def test_if_can_create_multiple_records(session: Session) -> None:
     group_crud = GroupCRUD(session=session)
 
-    payload = [{"code": f"ABC_{index}"} for index in range(0, 5)]
+    payload = [{"title": f"ABC_{index}"} for index in range(0, 5)]
     created = group_crud.create_many(payload=payload)
     for payload_item, instance in zip(payload, created):
         assert all([instance.id, instance.created_on, instance.updated_on])
-        assert instance.code == payload_item["code"]
+        assert instance.title == payload_item["title"]
 
 
 def test_if_raises_exception_when_retrieves_nonexistent_record(
@@ -140,22 +146,22 @@ def test_if_can_read_multiple_records(
     assert [item.id for item in retrieved] == [1, 7]
 
     retrieved = student_crud.read_many(
-        where=Student.group.has(Group.code.in_(["2", "1024"]))
+        where=Student.group.has(Group.title.in_(["2", "1024"]))
     )
-    assert all([instance.group.code == "2" for instance in retrieved])
+    assert all([instance.group.title == "2" for instance in retrieved])
 
 
 def test_if_can_update_record(engine: Engine) -> None:
     with session_factory(bind=engine) as session:
-        created = GroupCRUD(session=session).create(payload={"code": "ABC"})
+        created = GroupCRUD(session=session).create(payload={"title": "ABC"})
 
     assert created.id
-    assert created.code == "ABC"
+    assert created.title == "ABC"
 
     with session_factory(bind=engine) as session:
         updated = GroupCRUD(session=session).update(
-            id=created.id, payload={"id": 42, "code": "DEF"}
+            id=created.id, payload={"id": 42, "title": "DEF"}
         )
 
     assert updated.id == created.id
-    assert updated.code == "DEF"
+    assert updated.title == "DEF"
