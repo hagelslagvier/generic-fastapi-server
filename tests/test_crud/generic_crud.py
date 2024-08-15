@@ -3,7 +3,7 @@ from sqlalchemy.orm import mapped_column
 
 from app.db.orm.crud.common import GenericCRUD
 from app.db.orm.models import Base
-from tests.test_crud.generic_models import Group, Locker, Student
+from tests.test_crud.generic_models import Course, Group, Locker, Student
 
 
 class GroupCRUD(GenericCRUD[Group]):
@@ -11,6 +11,10 @@ class GroupCRUD(GenericCRUD[Group]):
 
 
 class StudentCRUD(GenericCRUD[Student]):
+    pass
+
+
+class CourseCRUD(GenericCRUD[Course]):
     pass
 
 

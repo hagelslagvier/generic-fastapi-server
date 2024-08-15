@@ -1,9 +1,24 @@
 from typing import List
 
-from sqlalchemy import ForeignKey, String, asc, text
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, asc, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.orm.models import Base
+
+m2m_student_course = Table(
+    "m2m_student_course",
+    Base.metadata,
+    Column(
+        "student_id",
+        Integer,
+        ForeignKey("students.id"),
+        primary_key=True,
+        nullable=True,
+    ),
+    Column(
+        "course_id", Integer, ForeignKey("courses.id"), primary_key=True, nullable=True
+    ),
+)
 
 
 class Group(Base):
@@ -31,8 +46,29 @@ class Student(Base):
     locker_id: Mapped[int] = mapped_column(ForeignKey("lockers.id"))
     locker: Mapped["Locker"] = relationship(back_populates="student")
 
+    courses: Mapped[List["Course"]] = relationship(
+        secondary=m2m_student_course,  # many-to-many
+        back_populates="students",
+        order_by=asc("Course.id"),
+    )
+
     def __repr__(self) -> str:
         return f"Student(id={self.id})"
+
+
+class Course(Base):
+    __tablename__ = "courses"
+
+    title: Mapped[str] = mapped_column(String(64), unique=True)
+
+    students: Mapped[List["Student"]] = relationship(
+        secondary=m2m_student_course,  # many-to-many
+        back_populates="courses",
+        order_by=asc("Student.id"),
+    )
+
+    def __repr__(self) -> str:
+        return f"Course(id={self.id})"
 
 
 class Locker(Base):
