@@ -25,9 +25,11 @@ class Base(DeclarativeBase):
     @classmethod
     def _get_attributes(cls) -> List[str]:
         primary_key = set(cls._get_primary_key())
-        attrs = {c.name for c in cls.__mapper__.columns}
-        safe_attrs = list(attrs - primary_key)
-        return safe_attrs
+        attributes = {c.name for c in cls.__mapper__.columns} | {
+            r.key for r in cls.__mapper__.relationships
+        }
+        safe_attributes = list(attributes - primary_key)
+        return safe_attributes
 
     @classmethod
     def new(cls: Type[T], **kwargs: Any) -> T:
