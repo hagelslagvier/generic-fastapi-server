@@ -108,25 +108,48 @@ def test_if_can_read_single_record(session: Session, content: SideEffect) -> Non
     assert retrieved.id == 1
 
 
-def test_if_can_read_multiple_records(
-    session: Session, content: SideEffect
-) -> None:  # TODO: split and extend
+def test_if_can_read_multiple_records(session: Session, content: SideEffect) -> None:
     student_crud = StudentCRUD(session=session)
 
     retrieved = student_crud.read_many()
     assert {item.id for item in retrieved} == {1, 2, 3, 4, 5, 6, 7}
 
+
+def test_if_can_sort_records(session: Session, content: SideEffect) -> None:
+    student_crud = StudentCRUD(session=session)
+
+    retrieved = student_crud.read_many(order_by=asc(Student.id))
+    assert [item.id for item in retrieved] == [1, 2, 3, 4, 5, 6, 7]
+
     retrieved = student_crud.read_many(order_by=desc(Student.id))
     assert [item.id for item in retrieved] == [7, 6, 5, 4, 3, 2, 1]
 
-    retrieved = student_crud.read_many(take=2, order_by=asc(Student.id))
-    assert [item.id for item in retrieved] == [1, 2]
+
+def test_if_can_limit_records(session: Session, content: SideEffect) -> None:
+    student_crud = StudentCRUD(session=session)
+
+    retrieved = student_crud.read_many(take=1)
+    assert {item.id for item in retrieved} == {1}
+
+    retrieved = student_crud.read_many(take=5)
+    assert {item.id for item in retrieved} == {1, 2, 3, 4, 5}
+
+
+def test_if_can_offset_records(session: Session, content: SideEffect) -> None:
+    student_crud = StudentCRUD(session=session)
 
     retrieved = student_crud.read_many(skip=2, take=2, order_by=asc(Student.id))
     assert [item.id for item in retrieved] == [3, 4]
 
-    retrieved = student_crud.read_many(where=Student.id > 4, order_by=desc(Student.id))
-    assert [item.id for item in retrieved] == [7, 6, 5]
+    retrieved = student_crud.read_many(skip=2, take=2, order_by=desc(Student.id))
+    assert [item.id for item in retrieved] == [5, 4]
+
+
+def test_if_can_filter_records(session: Session, content: SideEffect) -> None:
+    student_crud = StudentCRUD(session=session)
+
+    retrieved = student_crud.read_many(where=Student.id > 4)
+    assert {item.id for item in retrieved} == {5, 6, 7}
 
     retrieved = student_crud.read_many(where=or_(Student.id == 1, Student.id == 1024))
     assert {item.id for item in retrieved} == {1}
