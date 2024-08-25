@@ -43,17 +43,17 @@ clean:
 build:
     just clean
     docker build \
-      --build-arg=APP_NAME=${APP_NAME} \
-      --build-arg=POETRY_VERSION=${POETRY_VERSION} \
-      --build-arg=PYTHON_IMAGE=${PYTHON_IMAGE} \
+      --build-arg APP_NAME=${APP_NAME} \
+      --build-arg POETRY_VERSION=${POETRY_VERSION} \
+      --build-arg PYTHON_IMAGE=${PYTHON_IMAGE} \
       -t ${APP_NAME} .
 
 rebuild:
     just clean
     docker build \
-      --build-arg=APP_NAME=${APP_NAME} \
-      --build-arg=POETRY_VERSION=${POETRY_VERSION} \
-      --build-arg=PYTHON_IMAGE=${PYTHON_IMAGE} \
+      --build-arg APP_NAME=${APP_NAME} \
+      --build-arg POETRY_VERSION=${POETRY_VERSION} \
+      --build-arg PYTHON_IMAGE=${PYTHON_IMAGE} \
       --no-cache \
       -t ${APP_NAME} .
 
