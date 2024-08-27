@@ -17,8 +17,11 @@ test:
 
 show-coverage:
     #!/usr/bin/env python3
+    import pathlib
     import webbrowser
-    webbrowser.open("tests/coverage/index.html")
+
+    report_path = f"file://{pathlib.Path.cwd()/'tests/coverage/index.html'}"
+    webbrowser.open(report_path)
 
 check:
     just fix
