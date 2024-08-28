@@ -92,5 +92,8 @@ install:
 
     echo -e "\e[32m!! venv created in folder '{{ABS_VENV_PATH}}'\e[0m"
 
-#  TODO: add publish
+publish tag:
+    docker tag ${APP_NAME}:latest ${DOCKER_HUB_USER}/${APP_NAME}:{{tag}}
+    docker push ${DOCKER_HUB_USER}/${APP_NAME}:{{tag}}
+
 #  TODO: add make-erm
