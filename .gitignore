@@ -1,6 +1,6 @@
 ### Other
-.idea
-./volumes
+.idea/
+volumes/
 
 ### Python template
 # Byte-compiled / optimized / DLL files
