@@ -65,7 +65,7 @@ run:
 deploy:
     docker compose --env-file .env.prod up
 
-health-check:
+check-health:
     docker compose --env-file .env.prod ps
 
 stop:
