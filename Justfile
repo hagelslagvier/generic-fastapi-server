@@ -35,13 +35,9 @@ migrate:
     alembic -c app/db/alembic.ini upgrade head
 
 clean:
-    find ./app ./tests \
-      -regextype posix-extended \
-      -regex '.*(/\.ruff_cache|/\.mypy_cache|/.pytest_cache|/__pycache__|\.pyc|\.pyo)$' \
-      -exec rm -rf {} +
-    yes Y | docker image prune
-    docker images -a | grep none | awk '{ print $3; }' | xargs docker rmi --force 2>/dev/null || true
-    rm -rf tests/coverage
+    find app tests -type d -name ".*_cache" -exec rm -rf {} +
+    find app tests -type d -name "__pycache__" -exec rm -rf {} +
+    find app tests -type f \( -name "*.pyc" -o -name "*.pyo" \) -exec rm -f {} +
 
 build:
     just clean
