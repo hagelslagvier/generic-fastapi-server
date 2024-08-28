@@ -1,25 +1,29 @@
-import json
-import subprocess
-from json import JSONDecodeError
+from datetime import datetime
 from typing import Dict
+
+import psutil
 
 from app.endpoints.custom import Router
 
 
-def _mpstat() -> Dict:
-    command = "mpstat -o JSON"
-    process = subprocess.run(command, shell=True, capture_output=True, text=True)
-    if process.returncode != 0:
-        raise RuntimeError(f"Error while doing health check: {process.stderr}")
-
+def _get_status() -> Dict[str, str]:
     try:
-        stats = json.loads(process.stdout)
-    except JSONDecodeError as error:
-        raise RuntimeError("Error while doing health check") from error
+        cpu_usage = psutil.cpu_percent(interval=1)
+        memory_usage = psutil.virtual_memory().percent
+        uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
+        return {
+            "status": "healthy",
+            "uptime": str(uptime),
+            "cpu": str(cpu_usage),
+            "ram": str(memory_usage),
+        }
 
-    health = {"stats": stats}
-
-    return health
+    except Exception as error:
+        return {
+            "status": "unhealthy",
+            "error_type": error.__class__.__name__,
+            "error": str(error),
+        }
 
 
 router = Router(
@@ -29,5 +33,5 @@ router = Router(
 
 
 @router.get("/")
-def update() -> Dict:
-    return _mpstat()
+def update() -> Dict[str, str]:
+    return _get_status()
