@@ -1,21 +1,32 @@
-from datetime import datetime
-from typing import Dict
+from typing import Dict, Union
 
-import psutil
+from fastapi import Depends
+from injector import Injector
 
 from app.endpoints.custom import Router
+from app.endpoints.health.interfaces import HealthCheckProbeInterface
+from app.endpoints.health.schema import HealthReport, HealthReportError
+
+router = Router(
+    prefix="/health",
+    tags=["health"],
+)
 
 
-def _get_status() -> Dict[str, str]:
+@router.get("/", response_model=Union[HealthReport, HealthReportError])
+def health(injector: Injector = Depends(lambda: router.injector)) -> Dict:
+    health_check_probe = injector.get(HealthCheckProbeInterface)  # type: ignore[type-abstract]
+
     try:
-        cpu_usage = psutil.cpu_percent(interval=1)
-        memory_usage = psutil.virtual_memory().percent
-        uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
+        uptime = health_check_probe.get_uptime()
+        cpu_usage = health_check_probe.get_cpu_usage()
+        ram_usage = health_check_probe.get_ram_usage()
+
         return {
             "status": "healthy",
             "uptime": str(uptime),
-            "cpu": str(cpu_usage),
-            "ram": str(memory_usage),
+            "cpu": cpu_usage,
+            "ram": ram_usage,
         }
 
     except Exception as error:
@@ -24,14 +35,3 @@ def _get_status() -> Dict[str, str]:
             "error_type": error.__class__.__name__,
             "error": str(error),
         }
-
-
-router = Router(
-    prefix="/health",
-    tags=["health"],
-)
-
-
-@router.get("/")
-def update() -> Dict[str, str]:
-    return _get_status()

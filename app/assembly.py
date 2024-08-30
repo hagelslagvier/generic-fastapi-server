@@ -13,6 +13,8 @@ from app.config import Config
 from app.db.utils import migrate
 from app.endpoints.custom import App
 from app.endpoints.health.health import router as health_router
+from app.endpoints.health.interactors import HealthCheckProbe
+from app.endpoints.health.interfaces import HealthCheckProbeInterface
 from app.endpoints.users.users import router as users_router
 
 ROOT_PATH = Path(__file__).parents[1]
@@ -60,6 +62,12 @@ def assemble_db(injector: Injector) -> Injector:
     return injector
 
 
+def assemble_endpoints(injector: Injector) -> Injector:
+    injector.binder.bind(HealthCheckProbeInterface, HealthCheckProbe())  # type: ignore[type-abstract]
+
+    return injector
+
+
 def assemble_app(injector: Injector) -> Injector:
     config = injector.get(Config)
 
@@ -83,4 +91,5 @@ def assemble_app(injector: Injector) -> Injector:
 root_injector = Injector()
 assemble_config(root_injector)
 assemble_db(root_injector)
+assemble_endpoints(root_injector)
 assemble_app(root_injector)

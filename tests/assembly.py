@@ -7,7 +7,7 @@ from injector import Injector, singleton
 from sqlalchemy import Engine, StaticPool, create_engine
 from sqlalchemy.orm import Session
 
-from app.assembly import assemble_app
+from app.assembly import assemble_app, assemble_endpoints
 from app.config import Config
 
 ROOT_PATH = Path(__file__).parents[1]
@@ -62,4 +62,5 @@ def assemble_test_db(injector: Injector) -> Injector:
 test_root_injector = Injector()
 assemble_test_config(test_root_injector)
 assemble_test_db(test_root_injector)
+assemble_endpoints(test_root_injector)
 assemble_app(test_root_injector)
