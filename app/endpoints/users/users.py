@@ -3,9 +3,11 @@ from typing import List
 from fastapi import Depends
 from injector import Injector
 from pydantic import NonNegativeInt, PositiveInt
+from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.common import UserCRUD
+from app.db.orm.crud.generic import session_factory
 from app.endpoints.custom import Router
 from app.endpoints.users.schema import UserSchemaInput, UserSchemaOutput
 
@@ -41,9 +43,10 @@ def create(
     user_schema: UserSchemaInput,
     injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
-    user = UserCRUD(session=injector.get(Session)).create(
-        payload=user_schema.dict(exclude_none=True)
-    )
+    with session_factory(bind=injector.get(Engine)) as session:
+        user = UserCRUD(session=session).create(
+            payload=user_schema.dict(exclude_none=True)
+        )
     response = UserSchemaOutput(**user.__dict__)
     return response
 
@@ -54,10 +57,11 @@ def put(
     user_schema: UserSchemaInput,
     injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
-    user = UserCRUD(session=injector.get(Session)).update(
-        id=id,
-        payload=user_schema.dict(),
-    )
+    with session_factory(bind=injector.get(Engine)) as session:
+        user = UserCRUD(session=session).update(
+            id=id,
+            payload=user_schema.dict(),
+        )
     response = UserSchemaOutput(**user.__dict__)
     return response
 
@@ -67,6 +71,7 @@ def delete(
     id: int,
     injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
-    user = UserCRUD(session=injector.get(Session)).delete(id=id)
+    with session_factory(bind=injector.get(Engine)) as session:
+        user = UserCRUD(session=session).delete(id=id)
     response = UserSchemaOutput(**user.__dict__)
     return response
