@@ -14,7 +14,7 @@ router = Router(
 
 
 @router.get("/", response_model=Union[HealthReport, HealthReportError])
-def health(injector: Injector = Depends(lambda: router.injector)) -> Dict:
+def get(injector: Injector = Depends(lambda: router.injector)) -> Dict:
     health_check_probe = injector.get(HealthCheckProbeInterface)  # type: ignore[type-abstract]
 
     try:

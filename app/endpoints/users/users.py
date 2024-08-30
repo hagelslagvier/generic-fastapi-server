@@ -18,7 +18,7 @@ router = Router(
 
 
 @router.get("/")
-def read_many(
+def get_many(
     skip: NonNegativeInt = 0,
     take: PositiveInt = 5,
     injector: Injector = Depends(lambda: router.injector),
@@ -29,7 +29,7 @@ def read_many(
 
 
 @router.get("/{id}")
-def read_one(
+def get_one(
     id: int,
     injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
@@ -39,7 +39,7 @@ def read_one(
 
 
 @router.post("/")
-def create(
+def post(
     user_schema: UserSchemaInput,
     injector: Injector = Depends(lambda: router.injector),
 ) -> UserSchemaOutput:
