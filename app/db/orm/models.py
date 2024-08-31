@@ -9,12 +9,9 @@ T = TypeVar("T", bound="Base")
 class Base(DeclarativeBase):
     __abstract__ = True
     id = mapped_column(Integer, primary_key=True)
-    created_on = mapped_column(DateTime(timezone=True), server_default=func.now())
-    updated_on = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        server_onupdate=func.now(),  # type: ignore[arg-type]
-    )
+    created_on = mapped_column(DateTime, default=func.now())
+    updated_on = mapped_column(DateTime, default=func.now(), onupdate=func.now())
+
     __mapper_args__ = {"eager_defaults": True}
 
     @classmethod
