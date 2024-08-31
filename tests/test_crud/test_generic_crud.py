@@ -179,6 +179,8 @@ def test_if_can_update_record(engine: Engine) -> None:
         created = GroupCRUD(session=session).create(payload={"title": "ABC"})
 
     assert created.id
+    assert created.updated_on
+    assert created.updated_on
     assert created.title == "ABC"
 
     with session_factory(bind=engine) as session:
@@ -186,5 +188,10 @@ def test_if_can_update_record(engine: Engine) -> None:
             id=created.id, payload={"id": 42, "title": "DEF"}
         )
 
+    assert updated.id
+    assert updated.created_on
+    assert updated.updated_on
     assert updated.id == created.id
     assert updated.title == "DEF"
+    assert updated.created_on == created.created_on
+    assert updated.updated_on >= created.updated_on
