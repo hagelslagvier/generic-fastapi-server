@@ -6,7 +6,13 @@ from sqlalchemy.orm import Session
 
 from app.db.orm.crud.errors import DoesNotExistError
 from app.db.orm.crud.generic import session_factory
-from tests.test_crud.generic_crud import Dummy, GroupCRUD, StudentCRUD
+from tests.test_crud.generic_crud import (
+    CourseCRUD,
+    Dummy,
+    GroupCRUD,
+    LockerCRUD,
+    StudentCRUD,
+)
 from tests.test_crud.generic_models import Group, Student
 from tests.types import SideEffect
 
@@ -195,3 +201,40 @@ def test_if_can_update_record(engine: Engine) -> None:
     assert updated.title == "DEF"
     assert updated.created_on == created.created_on
     assert updated.updated_on >= created.updated_on
+
+
+def test_if_can_get_one_to_one_related_field(
+    engine: Engine, content: SideEffect
+) -> None:
+    with session_factory(bind=engine) as session:
+        student = StudentCRUD(session=session).read(id=1)
+        assert student.id == 1
+        assert student.locker.id == 1
+
+    with session_factory(bind=engine) as session:
+        locker = LockerCRUD(session=session).read(id=1)
+        assert locker.id == 1
+        assert locker.student.id == 1
+
+
+def test_if_can_get_one_to_many_related_field(
+    engine: Engine, content: SideEffect
+) -> None:
+    with session_factory(bind=engine) as session:
+        group = GroupCRUD(session=session).read(id=1)
+        assert group.id == 1
+        assert {student.id for student in group.students} == {1, 2, 3, 4, 5}
+
+
+def test_if_can_get_many_to_many_related_field(
+    engine: Engine, content: SideEffect
+) -> None:
+    with session_factory(bind=engine) as session:
+        student = StudentCRUD(session=session).read(id=1)
+        assert student.id == 1
+        assert {course.id for course in student.courses} == {1, 2}
+
+    with session_factory(bind=engine) as session:
+        course = CourseCRUD(session=session).read(id=1)
+        assert course.id == 1
+        assert {student.id for student in course.students} == {1, 4, 5, 6, 7}

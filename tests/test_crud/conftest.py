@@ -43,13 +43,13 @@ def content(engine: Engine) -> None:
                     "name": "S2_G1",
                     "group": groups[0],
                     "locker": lockers[1],
-                    "courses": [courses[0]],
+                    "courses": [courses[1]],
                 },
                 {
                     "name": "S3_G1",
                     "group": groups[0],
                     "locker": lockers[2],
-                    "courses": [courses[0]],
+                    "courses": [courses[1]],
                 },
                 {
                     "name": "S4_G1",
