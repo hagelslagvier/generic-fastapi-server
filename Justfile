@@ -29,10 +29,10 @@ check:
     just test
 
 make-migrations:
-    alembic -c app/db/alembic.ini revision --autogenerate
+    alembic -c ${ALEMBIC_CONFIG_PATH} revision --autogenerate
 
 migrate:
-    alembic -c app/db/alembic.ini upgrade head
+    alembic -c ${ALEMBIC_CONFIG_PATH} upgrade head
 
 clean:
     find app tests -type d -name ".*_cache" -exec rm -rf {} +
