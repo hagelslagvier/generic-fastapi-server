@@ -49,7 +49,7 @@ class Student(Base):
     courses: Mapped[List["Course"]] = relationship(
         secondary=m2m_student_course,  # many-to-many
         back_populates="students",
-        order_by=asc("Course.id"),
+        order_by=asc(text("courses.id")),
     )
 
     def __repr__(self) -> str:
@@ -64,7 +64,7 @@ class Course(Base):
     students: Mapped[List["Student"]] = relationship(
         secondary=m2m_student_course,  # many-to-many
         back_populates="courses",
-        order_by=asc("Student.id"),
+        order_by=asc(text("students.id")),
     )
 
     def __repr__(self) -> str:
