@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 from sqlalchemy import Engine, and_, asc, desc, or_
@@ -30,7 +30,7 @@ from tests.types import SideEffect
     ],
 )
 def test_if_can_sanitize_unsafe_input_when_creates_instance(
-    attrs: Dict[str, Any], expected: Dict[str, Any]
+    attrs: dict[str, Any], expected: dict[str, Any]
 ) -> None:
     dummy = Dummy.new(**attrs)
 
@@ -54,7 +54,7 @@ def test_if_can_sanitize_unsafe_input_when_creates_instance(
     ],
 )
 def test_if_can_sanitize_unsafe_input_when_updates_instance(
-    attrs: Dict[str, Any], expected: Dict[str, Any]
+    attrs: dict[str, Any], expected: dict[str, Any]
 ) -> None:
     dummy = Dummy(id=42)
 

@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import Depends
 from injector import Injector
 from pydantic import NonNegativeInt, PositiveInt
@@ -22,7 +20,7 @@ def get_many(
     skip: NonNegativeInt = 0,
     take: PositiveInt = 5,
     injector: Injector = Depends(lambda: router.injector),
-) -> List[UserSchemaOutput]:
+) -> list[UserSchemaOutput]:
     users = UserCRUD(session=injector.get(Session)).read_many(skip=skip, take=take)
     response = [UserSchemaOutput(**user.__dict__) for user in users]
     return response

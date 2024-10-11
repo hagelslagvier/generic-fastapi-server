@@ -1,5 +1,3 @@
-from typing import Dict, Union
-
 from fastapi import Depends
 from injector import Injector
 
@@ -13,8 +11,8 @@ router = Router(
 )
 
 
-@router.get("/", response_model=Union[HealthReport, HealthReportError])
-def get(injector: Injector = Depends(lambda: router.injector)) -> Dict:
+@router.get("/", response_model=HealthReport | HealthReportError)
+def get(injector: Injector = Depends(lambda: router.injector)) -> dict:
     health_check_probe = injector.get(HealthCheckProbeInterface)  # type: ignore[type-abstract]
 
     try:

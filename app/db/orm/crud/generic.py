@@ -1,5 +1,6 @@
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
-from typing import Any, Dict, Generator, Optional, Sequence, Type, TypeVar, Union
+from typing import Any, TypeVar
 
 from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session
@@ -28,7 +29,7 @@ class GenericCRUD(CRUDInterface[T]):
     def __init__(self, session: Session) -> None:
         self.session = session
 
-    def _get_model(self) -> Type[T]:
+    def _get_model(self) -> type[T]:
         (bases,) = self.__orig_bases__  # type:ignore
         (model,) = bases.__args__
         return model  # type:ignore
@@ -39,21 +40,21 @@ class GenericCRUD(CRUDInterface[T]):
         count = self.session.execute(query).scalar() or 0
         return count
 
-    def create(self, *, payload: Dict[str, Any]) -> T:
+    def create(self, *, payload: dict[str, Any]) -> T:
         model = self._get_model()
         instance = model.new(**payload)
         self.session.add(instance)
         self.session.flush()
         return instance
 
-    def create_many(self, *, payload: Sequence[Dict[str, Any]]) -> Sequence[T]:
+    def create_many(self, *, payload: Sequence[dict[str, Any]]) -> Sequence[T]:
         model = self._get_model()
         instances = [model.new(**item) for item in payload]
         self.session.add_all(instances)
         self.session.flush()
         return instances
 
-    def read(self, id: Union[int, str]) -> T:
+    def read(self, id: int | str) -> T:
         model = self._get_model()
         instance = self.session.get(model, id)
         if not instance:
@@ -65,8 +66,8 @@ class GenericCRUD(CRUDInterface[T]):
     def read_many(
         self,
         *,
-        where: Optional[Any] = None,
-        order_by: Optional[Any] = None,
+        where: Any | None = None,
+        order_by: Any | None = None,
         skip: int = 0,
         take: int = 10,
     ) -> Generator[T, None, None]:
@@ -83,14 +84,14 @@ class GenericCRUD(CRUDInterface[T]):
         items = (item for item in self.session.execute(query).scalars())
         return items
 
-    def update(self, id: Union[int, str], *, payload: Dict[str, Any]) -> T:
+    def update(self, id: int | str, *, payload: dict[str, Any]) -> T:
         instance = self.read(id=id)
         instance.update(**payload)
         self.session.add(instance)
         self.session.flush()
         return instance
 
-    def delete(self, id: Union[int, str]) -> T:
+    def delete(self, id: int | str) -> T:
         instance = self.read(id=id)
         self.session.delete(instance)
         self.session.flush()

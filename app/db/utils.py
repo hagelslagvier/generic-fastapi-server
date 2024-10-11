@@ -1,5 +1,3 @@
-from typing import Optional
-
 from alembic import command
 from alembic.config import Config as AlembicConfig
 
@@ -15,6 +13,6 @@ def migrate(config: AppConfig) -> None:
 
 
 def create_super_user(
-    login: str, password: str, email: Optional[str] = None
+    login: str, password: str, email: str | None = None
 ) -> None:  # TODO: implement
     pass

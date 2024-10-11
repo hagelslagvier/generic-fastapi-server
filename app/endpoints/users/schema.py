@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -9,12 +8,12 @@ class UserSchemaInput(BaseModel):
     password: str = Field(..., max_length=64)
     email: EmailStr
     is_email_confirmed: bool = False
-    refresh_token: Optional[str] = None
-    access_token: Optional[str] = None
+    refresh_token: str | None = None
+    access_token: str | None = None
     is_admin: bool = False
 
 
 class UserSchemaOutput(UserSchemaInput):
-    id: Optional[int]
+    id: int | None
     created_on: datetime
     updated_on: datetime

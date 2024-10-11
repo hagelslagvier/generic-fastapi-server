@@ -1,4 +1,4 @@
-from typing import Any, List, Type, TypeVar
+from typing import Any, TypeVar
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship
@@ -15,12 +15,12 @@ class Base(DeclarativeBase):
     __mapper_args__ = {"eager_defaults": True}
 
     @classmethod
-    def _get_primary_key(cls) -> List[str]:
+    def _get_primary_key(cls) -> list[str]:
         primary_key = [c.name for c in cls.__mapper__.primary_key]
         return primary_key
 
     @classmethod
-    def _get_attributes(cls) -> List[str]:
+    def _get_attributes(cls) -> list[str]:
         primary_key = set(cls._get_primary_key())
         attributes = {c.name for c in cls.__mapper__.columns} | {
             r.key for r in cls.__mapper__.relationships
@@ -29,7 +29,7 @@ class Base(DeclarativeBase):
         return safe_attributes
 
     @classmethod
-    def new(cls: Type[T], **kwargs: Any) -> T:
+    def new(cls: type[T], **kwargs: Any) -> T:
         safe_kwargs = {k: v for k, v in kwargs.items() if k in cls._get_attributes()}
         return cls(**safe_kwargs)
 

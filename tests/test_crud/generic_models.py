@@ -1,5 +1,3 @@
-from typing import List
-
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, asc, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -26,7 +24,7 @@ class Group(Base):
 
     title: Mapped[str] = mapped_column(String(8), unique=True)
     students: Mapped[
-        List["Student"]
+        list["Student"]
     ] = relationship(  # Mapped[List[<model>]] -> one-to-many
         back_populates="group", order_by=asc(text("students.id"))
     )
@@ -46,7 +44,7 @@ class Student(Base):
     locker_id: Mapped[int] = mapped_column(ForeignKey("lockers.id"))
     locker: Mapped["Locker"] = relationship(back_populates="student")
 
-    courses: Mapped[List["Course"]] = relationship(
+    courses: Mapped[list["Course"]] = relationship(
         secondary=m2m_student_course,  # many-to-many
         back_populates="students",
         order_by=asc(text("courses.id")),
@@ -61,7 +59,7 @@ class Course(Base):
 
     title: Mapped[str] = mapped_column(String(64), unique=True)
 
-    students: Mapped[List["Student"]] = relationship(
+    students: Mapped[list["Student"]] = relationship(
         secondary=m2m_student_course,  # many-to-many
         back_populates="courses",
         order_by=asc(text("students.id")),

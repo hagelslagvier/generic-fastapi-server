@@ -1,7 +1,7 @@
 import os
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import AsyncGenerator, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -29,7 +29,7 @@ for path in [
         load_dotenv(path)
 
 
-def assemble_config(injector: Optional[Injector] = None) -> Injector:
+def assemble_config(injector: Injector | None = None) -> Injector:
     def make_config() -> Config:
         return Config(
             host=os.getenv("HOST", ""),

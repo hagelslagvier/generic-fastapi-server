@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, FastAPI
 from injector import Injector
@@ -17,4 +17,4 @@ class App(FastAPI):
 class Router(APIRouter):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.injector: Optional[Injector] = None
+        self.injector: Injector | None = None

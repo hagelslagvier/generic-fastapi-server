@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import Optional
 
 from dotenv import load_dotenv
 from injector import Injector, singleton
@@ -22,7 +21,7 @@ for path in [
         load_dotenv(path)
 
 
-def assemble_test_config(injector: Optional[Injector]) -> Injector:
+def assemble_test_config(injector: Injector | None) -> Injector:
     def make_config() -> Config:
         return Config(
             host=os.getenv("HOST", ""),

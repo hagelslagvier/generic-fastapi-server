@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generator, Generic, Optional, Sequence, TypeVar, Union
+from collections.abc import Generator, Sequence
+from typing import Any, Generic, TypeVar
 
 from app.db.orm.models import Base
 
@@ -12,32 +13,32 @@ class CRUDInterface(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    def create(self, *, payload: Dict[str, Any]) -> T:
+    def create(self, *, payload: dict[str, Any]) -> T:
         pass
 
     @abstractmethod
-    def create_many(self, *, payload: Sequence[Dict[str, Any]]) -> Sequence[T]:
+    def create_many(self, *, payload: Sequence[dict[str, Any]]) -> Sequence[T]:
         pass
 
     @abstractmethod
-    def read(self, id: Union[int, str]) -> T:
+    def read(self, id: int | str) -> T:
         pass
 
     @abstractmethod
     def read_many(
         self,
         *,
-        where: Optional[Any] = None,
-        order_by: Optional[Any] = None,
+        where: Any | None = None,
+        order_by: Any | None = None,
         skip: int = 0,
         take: int = 10,
     ) -> Generator[T, None, None]:
         pass
 
     @abstractmethod
-    def update(self, id: Union[int, str], *, payload: Dict[str, Any]) -> T:
+    def update(self, id: int | str, *, payload: dict[str, Any]) -> T:
         pass
 
     @abstractmethod
-    def delete(self, id: Union[int, str]) -> T:
+    def delete(self, id: int | str) -> T:
         pass
