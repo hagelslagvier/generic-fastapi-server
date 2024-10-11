@@ -12,8 +12,7 @@ RUN pip3 install --upgrade pip \
 
 WORKDIR /${APP_NAME}
 
-COPY pyproject.toml pyproject.toml
-COPY poetry.lock poetry.lock
+COPY pyproject.toml poetry.lock ./
 
 RUN POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=false \
     POETRY_VIRTUALENVS_CREATE=true \
@@ -30,8 +29,8 @@ RUN apt update -y \
 WORKDIR /${APP_NAME}
 
 COPY --from=base /${APP_NAME}/.venv /${APP_NAME}/.venv
-COPY app app
 COPY .env.base .env.base
 COPY .env.prod .env
+COPY app app
 
 CMD [ ".venv/bin/python",  "app/run.py" ]
