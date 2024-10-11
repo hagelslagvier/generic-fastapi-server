@@ -43,7 +43,7 @@ def post(
 ) -> UserSchemaOutput:
     with session_factory(bind=injector.get(Engine)) as session:
         user = UserCRUD(session=session).create(
-            payload=user_schema.dict(exclude_none=True)
+            payload=user_schema.model_dump(exclude_none=True)
         )
     response = UserSchemaOutput(**user.__dict__)
     return response
@@ -58,7 +58,7 @@ def put(
     with session_factory(bind=injector.get(Engine)) as session:
         user = UserCRUD(session=session).update(
             id=id,
-            payload=user_schema.dict(),
+            payload=user_schema.model_dump(),
         )
     response = UserSchemaOutput(**user.__dict__)
     return response
