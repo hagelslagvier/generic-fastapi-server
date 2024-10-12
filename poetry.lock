@@ -1035,6 +1035,22 @@ pluggy = ">=0.12,<2.0"
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-alembic"
+version = "0.11.1"
+description = "A pytest plugin for verifying alembic migrations."
+optional = false
+python-versions = "<4,>=3.6"
+files = [
+    {file = "pytest_alembic-0.11.1-py3-none-any.whl", hash = "sha256:f83e8c1534d50ced053aa4b1dbf6e261f4674aa626cb852fc1dcb565049ae152"},
+    {file = "pytest_alembic-0.11.1.tar.gz", hash = "sha256:a920d8770b5be77326c5c1b2bd8d4d4a0dd8fc2c2d57abbcd1fec28a21131b85"},
+]
+
+[package.dependencies]
+alembic = "*"
+pytest = ">=6.0"
+sqlalchemy = "*"
+
+[[package]]
 name = "pytest-cov"
 version = "4.1.0"
 description = "Pytest plugin for measuring coverage."
@@ -1351,4 +1367,4 @@ full = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "837c0c0bf8f72c689256cd0ddec8050b57b1f399b0743393e095359dfbe89f62"
+content-hash = "e66f897687eaf90cf4ff66f6ae4bd2c70399ac9bbca3840b670eb75bbca13a32"
