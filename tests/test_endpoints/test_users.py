@@ -13,7 +13,7 @@ def test_if_can_get_one(test_client: TestClient) -> None:
     response = test_client.get("/users/1")
     assert response.status_code == 200
 
-    actual = UserSchemaOutput(**response.json()).dict()
+    actual = UserSchemaOutput(**response.json()).model_dump()
     assert actual.pop("created_on")
     assert actual.pop("updated_on")
     assert actual == {
@@ -30,27 +30,27 @@ def test_if_can_get_one(test_client: TestClient) -> None:
 
 def test_if_can_post(test_client: TestClient) -> None:
     input_schema = UserSchemaInput(login="foo", password="bar", email="foo@bar.baz")
-    response = test_client.post("/users", json=input_schema.dict())
+    response = test_client.post("/users", json=input_schema.model_dump())
     assert response.status_code == 200
 
-    actual = UserSchemaOutput(**response.json()).dict()
+    actual = UserSchemaOutput(**response.json()).model_dump()
     assert actual.pop("id")
     assert actual.pop("created_on")
     assert actual.pop("updated_on")
-    assert actual == input_schema.dict()
+    assert actual == input_schema.model_dump()
 
 
 def test_if_can_put(test_client: TestClient) -> None:
     input_schema = UserSchemaInput(
         login="foo-new", password="bar-new", email="foo-new@bar.baz"
     )
-    response = test_client.put("/users/1", json=input_schema.dict())
+    response = test_client.put("/users/1", json=input_schema.model_dump())
     assert response.status_code == 200
 
-    actual = UserSchemaOutput(**response.json()).dict()
+    actual = UserSchemaOutput(**response.json()).model_dump()
     assert actual.pop("created_on")
     assert actual.pop("updated_on")
-    assert actual == {"id": 1, **input_schema.dict()}
+    assert actual == {"id": 1, **input_schema.model_dump()}
 
 
 def test_if_can_delete(test_client: TestClient) -> None:
