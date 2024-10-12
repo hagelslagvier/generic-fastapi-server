@@ -59,14 +59,8 @@ rebuild:
 debug:
     docker run --rm -it --entrypoint bash ${APP_NAME}
 
-run:
+start:
     docker compose --env-file .env.dev up db
-
-deploy:
-    docker compose --env-file .env.prod up
-
-check-health:
-    docker compose --env-file .env.prod ps
 
 stop:
     #!/bin/bash
@@ -75,6 +69,12 @@ stop:
         docker stop ${CONTAINERS}
         docker rm ${CONTAINERS}
     fi
+
+up:
+    docker compose --env-file .env.prod up
+
+check-health:
+    docker compose --env-file .env.prod ps
 
 install:
     #!/bin/bash
