@@ -5,6 +5,7 @@ ABS_VENV_PATH := absolute_path(clean("${VENV}"))
 
 fix:
     isort app/ tests/
+    find app/ tests/ -name "*.py" -type f | xargs -I {} pyupgrade --py312-plus {}
     ruff check app/ tests/ --extend-select I --fix
     ruff format app/ tests/
 
