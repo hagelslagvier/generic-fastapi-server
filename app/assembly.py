@@ -10,7 +10,7 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
 from app.config import Config
-from app.db.utils import migrate
+from app.db.utils.versions import migrate
 from app.endpoints.custom import App
 from app.endpoints.health.health import router as health_router
 from app.endpoints.users.users import router as users_router

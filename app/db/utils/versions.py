@@ -10,9 +10,3 @@ def migrate(config: AppConfig) -> None:
     alembic_config.set_main_option("sqlalchemy.url", config.db_url)
 
     command.upgrade(alembic_config, "head")
-
-
-def create_super_user(
-    login: str, password: str, email: str | None = None
-) -> None:  # TODO: implement
-    pass
