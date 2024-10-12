@@ -1,14 +1,23 @@
 from collections.abc import Generator
 
 import pytest
-from sqlalchemy import Engine
+from sqlalchemy import Engine, MetaData
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.generic import session_factory
 from app.db.orm.models import Base as ORMBase
 from tests.assembly import test_root_injector
 from tests.test_crud.generic_models import Base as GenericBase
-from tests.utils import merge_metadata
+
+
+def merge_metadata(*chunks: MetaData) -> MetaData:
+    metadata = MetaData()
+    for chunk in chunks:
+        for table_name, table in chunk.tables.items():
+            metadata._add_table(table_name, table.schema, table)  # noqa
+
+    return metadata
+
 
 metadata = merge_metadata(ORMBase.metadata, GenericBase.metadata)
 
