@@ -13,9 +13,9 @@ from app.config import Config
 from app.db.utils import migrate
 from app.endpoints.custom import App
 from app.endpoints.health.health import router as health_router
-from app.endpoints.health.interactors import HealthCheckProbe
-from app.endpoints.health.interfaces import HealthCheckProbeInterface
 from app.endpoints.users.users import router as users_router
+from app.interactors.health_check.interactors import HealthCheckProbe
+from app.interactors.health_check.interfaces import HealthCheckProbeInterface
 
 ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"

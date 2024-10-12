@@ -2,8 +2,8 @@ from fastapi import Depends
 from injector import Injector
 
 from app.endpoints.custom import Router
-from app.endpoints.health.interfaces import HealthCheckProbeInterface
 from app.endpoints.health.schema import HealthReport, HealthReportError
+from app.interactors.health_check.interfaces import HealthCheckProbeInterface
 
 router = Router(
     prefix="/health",

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import psutil
 
-from app.endpoints.health.interfaces import HealthCheckProbeInterface
+from app.interactors.health_check.interfaces import HealthCheckProbeInterface
 
 
 class HealthCheckProbe(HealthCheckProbeInterface):
