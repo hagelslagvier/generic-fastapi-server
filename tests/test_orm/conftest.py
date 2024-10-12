@@ -1,8 +1,8 @@
 import pytest
 from sqlalchemy import Engine
 
-from app.db.orm.crud.common import UserCRUD
 from app.db.orm.crud.generic import session_factory
+from app.interactors.users.interactors import UserCRUD
 
 
 @pytest.fixture

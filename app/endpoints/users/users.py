@@ -4,10 +4,10 @@ from pydantic import NonNegativeInt, PositiveInt
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
-from app.db.orm.crud.common import UserCRUD
 from app.db.orm.crud.generic import session_factory
 from app.endpoints.custom import Router
 from app.endpoints.users.schema import UserSchemaInput, UserSchemaOutput
+from app.interactors.users.interactors import UserCRUD
 
 router = Router(
     prefix="/users",
