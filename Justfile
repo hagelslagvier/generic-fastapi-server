@@ -4,10 +4,10 @@ set dotenv-filename := ".env.base"
 ABS_VENV_PATH := absolute_path(clean("${VENV}"))
 
 fix:
-    isort app/ tests/
     find app/ tests/ -name "*.py" -type f | xargs -I {} pyupgrade --py312-plus {}
-    ruff check app/ tests/ --extend-select I --fix
+    ruff check app/ tests/ --fix
     ruff format app/ tests/
+
 
 type-check:
     mypy app/
