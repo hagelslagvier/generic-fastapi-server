@@ -63,7 +63,7 @@ def assemble_db(injector: Injector) -> Injector:
     return injector
 
 
-def assemble_endpoints(injector: Injector) -> Injector:
+def assemble_interactors(injector: Injector) -> Injector:
     injector.binder.bind(HealthCheckProbeInterface, HealthCheckProbe())
 
     return injector
@@ -93,5 +93,5 @@ def assemble_app(injector: Injector) -> Injector:
 root_injector = Injector()
 assemble_config(root_injector)
 assemble_db(root_injector)
-assemble_endpoints(root_injector)
+assemble_interactors(root_injector)
 assemble_app(root_injector)
