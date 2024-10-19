@@ -1,8 +1,8 @@
 from sqlalchemy import String
 from sqlalchemy.orm import mapped_column
 
-from app.db.orm.crud.generic import GenericCRUD
-from app.db.orm.models import Base
+from app.database.orm.crud.generic import GenericCRUD
+from app.database.orm.models import Base
 from tests.test_crud.generic_models import Course, Group, Locker, Student
 
 

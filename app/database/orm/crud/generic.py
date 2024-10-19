@@ -5,9 +5,9 @@ from typing import Any, TypeVar
 from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session
 
-from app.db.orm.crud.errors import DoesNotExistError
-from app.db.orm.crud.interfaces import CRUDInterface
-from app.db.orm.models import Base
+from app.database.orm.crud.errors import DoesNotExistError
+from app.database.orm.crud.interfaces import CRUDInterface
+from app.database.orm.models import Base
 
 T = TypeVar("T", bound=Base)
 

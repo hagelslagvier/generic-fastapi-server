@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, asc, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.orm.models import Base
+from app.database.orm.models import Base
 
 m2m_student_course = Table(
     "m2m_student_course",

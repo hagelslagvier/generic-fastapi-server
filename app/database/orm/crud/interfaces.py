@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Generator, Sequence
 from typing import Any, Generic, TypeVar
 
-from app.db.orm.models import Base
+from app.database.orm.models import Base
 
 T = TypeVar("T", bound=Base)
 

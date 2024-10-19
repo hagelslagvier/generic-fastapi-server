@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config, pool
 
 from app.assembly import root_injector
 from app.config import Config
-from app.db.orm import models
+from app.database.orm import models
 
 APP_CONFIG = root_injector.get(Config)
 

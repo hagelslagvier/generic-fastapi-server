@@ -4,8 +4,8 @@ import pytest
 from sqlalchemy import Engine, MetaData
 from sqlalchemy.orm import Session
 
-from app.db.orm.crud.generic import session_factory
-from app.db.orm.models import Base as ORMBase
+from app.database.orm.crud.generic import session_factory
+from app.database.orm.models import Base as ORMBase
 from tests.assembly import test_root_injector
 from tests.test_crud.generic_models import Base as GenericBase
 

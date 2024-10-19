@@ -4,8 +4,8 @@ import pytest
 from sqlalchemy import Engine, and_, asc, desc, or_
 from sqlalchemy.orm import Session
 
-from app.db.orm.crud.errors import DoesNotExistError
-from app.db.orm.crud.generic import session_factory
+from app.database.orm.crud.errors import DoesNotExistError
+from app.database.orm.crud.generic import session_factory
 from tests.test_crud.generic_crud import (
     CourseCRUD,
     Dummy,

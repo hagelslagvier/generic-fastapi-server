@@ -1,7 +1,7 @@
 from sqlalchemy import Engine
 
 from app.assembly import root_injector
-from app.db.orm.crud.generic import session_factory
+from app.database.orm.crud.generic import session_factory
 from app.endpoints.users.schema import UserSchemaOutput
 from app.interactors.users.interactors import UserCRUD
 

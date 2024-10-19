@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import Engine
 
-from app.db.orm.crud.generic import session_factory
+from app.database.orm.crud.generic import session_factory
 from tests.test_crud.generic_crud import CourseCRUD, GroupCRUD, LockerCRUD, StudentCRUD
 
 

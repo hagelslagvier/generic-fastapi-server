@@ -6,7 +6,7 @@ from injector import Injector
 from sqlalchemy import Engine
 from starlette.testclient import TestClient
 
-from app.db.orm.crud.generic import session_factory
+from app.database.orm.crud.generic import session_factory
 from app.interactors.health_check.interfaces import HealthCheckProbeInterface
 from app.interactors.users.interactors import UserCRUD
 from tests.assembly import test_root_injector
