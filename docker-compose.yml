@@ -19,7 +19,7 @@ services:
       retries: 1
 
     env_file:
-      - .env.prod
+      - .env.production
     ports:
       - ${PORT}:${PORT}
 

@@ -30,7 +30,7 @@ WORKDIR /${APP_NAME}
 
 COPY --from=base /${APP_NAME}/.venv /${APP_NAME}/.venv
 COPY .env.base .env.base
-COPY .env.prod .env
+COPY .env.production .env
 COPY app app
 
 CMD [ ".venv/bin/python",  "app/run.py" ]

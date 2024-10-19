@@ -45,7 +45,7 @@ disable_error_code = ["type-abstract"]
 [tool.coverage.run]
 source = ["app"]
 omit = [
-    "app/db/utils/*",
+    "app/database/utils/*",
     "app/run.py"
 ]
 

@@ -61,7 +61,7 @@ debug:
     docker run --rm -it --entrypoint bash ${APP_NAME}
 
 start:
-    docker compose --env-file .env.dev up db
+    docker compose --env-file .env.development up db
 
 stop:
     #!/bin/bash
@@ -72,10 +72,10 @@ stop:
     fi
 
 up:
-    docker compose --env-file .env.prod up
+    docker compose --env-file .env.production up
 
 check-health:
-    docker compose --env-file .env.prod ps
+    docker compose --env-file .env.production ps
 
 install:
     #!/bin/bash
