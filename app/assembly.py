@@ -62,7 +62,7 @@ def assemble_db(injector: Injector) -> Injector:
 
 
 def assemble_endpoints(injector: Injector) -> Injector:
-    injector.binder.bind(HealthCheckProbeInterface, HealthCheckProbe())  # type: ignore[type-abstract]
+    injector.binder.bind(HealthCheckProbeInterface, HealthCheckProbe())
 
     return injector
 

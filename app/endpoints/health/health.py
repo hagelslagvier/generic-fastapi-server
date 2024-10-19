@@ -13,7 +13,7 @@ router = APIRouter(
 
 @router.get("/", response_model=HealthReport | HealthReportError)
 def get(injector: Injector = Depends(make_injector)) -> dict:
-    health_check_probe = injector.get(HealthCheckProbeInterface)  # type: ignore[type-abstract]
+    health_check_probe = injector.get(HealthCheckProbeInterface)
 
     try:
         uptime = health_check_probe.get_uptime()

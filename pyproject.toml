@@ -40,6 +40,7 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 plugins = ["pydantic.mypy"]
+disable_error_code = ["type-abstract"]
 
 [tool.coverage.run]
 source = ["app"]

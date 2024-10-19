@@ -61,7 +61,7 @@ def faulty_probe(test_injector: Injector) -> SideEffect:
         def get_ram_usage(self) -> int:
             return 32
 
-    test_injector.binder.bind(HealthCheckProbeInterface, to=FaultyProbe())  # type: ignore[type-abstract]
+    test_injector.binder.bind(HealthCheckProbeInterface, to=FaultyProbe())
 
 
 @pytest.fixture
