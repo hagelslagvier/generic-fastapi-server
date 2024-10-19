@@ -32,12 +32,12 @@ for path in [
 def assemble_config(injector: Injector | None = None) -> Injector:
     def make_config() -> Config:
         return Config(
-            host=os.getenv("HOST", ""),
-            port=os.getenv("PORT", 0),
+            host=os.environ["HOST"],
+            port=os.environ["PORT"],
+            db_url=os.environ["DB_URL"],
+            alembic_config_path=os.environ["ALEMBIC_CONFIG_PATH"],
+            db_migrations_path=os.environ["MIGRATIONS_PATH"],
             reload=os.getenv("RELOAD", False),
-            db_url=os.getenv("DB_URL", ""),
-            alembic_config_path=os.getenv("ALEMBIC_CONFIG_PATH", ""),
-            db_migrations_path=os.getenv("MIGRATIONS_PATH", ""),
         )
 
     injector = injector or Injector()
