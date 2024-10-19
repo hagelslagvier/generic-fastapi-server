@@ -11,12 +11,14 @@ from app.config import Config
 
 ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"
+ENV_PRODUCTION = ROOT_PATH / ".env"
 ENV_DEVELOPMENT_PATH = ROOT_PATH / ".env.development"
 
 for path in [
-    ENV_BASE_PATH,
-    ENV_DEVELOPMENT_PATH,
-]:  # in Dockerfile, ENV_DEVELOPMENT_PATH (.env.development) is not copied to the image
+    ENV_BASE_PATH,  # dev + prod
+    ENV_DEVELOPMENT_PATH,  # dev only
+    ENV_PRODUCTION,  # prod only (see Dockerfile: COPY .env.production .env)
+]:
     if path.exists() and path.is_file():
         load_dotenv(path)
 

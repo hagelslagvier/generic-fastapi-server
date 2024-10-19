@@ -2,7 +2,7 @@
 .idea/
 volumes/
 
-.env.development
+.env
 
 .DS_Store
 
