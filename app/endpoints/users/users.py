@@ -1,15 +1,15 @@
-from fastapi import Depends
+from fastapi import APIRouter, Depends
 from injector import Injector
 from pydantic import NonNegativeInt, PositiveInt
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
 from app.db.orm.crud.generic import session_factory
-from app.endpoints.custom import Router
+from app.dependencies.injector import make_injector
 from app.endpoints.users.schema import UserSchemaInput, UserSchemaOutput
 from app.interactors.users.interactors import UserCRUD
 
-router = Router(
+router = APIRouter(
     prefix="/users",
     tags=["users"],
 )
@@ -19,7 +19,7 @@ router = Router(
 def get_many(
     skip: NonNegativeInt = 0,
     take: PositiveInt = 5,
-    injector: Injector = Depends(lambda: router.injector),
+    injector: Injector = Depends(make_injector),
 ) -> list[UserSchemaOutput]:
     users = UserCRUD(session=injector.get(Session)).read_many(skip=skip, take=take)
     response = [UserSchemaOutput(**user.__dict__) for user in users]
@@ -29,7 +29,7 @@ def get_many(
 @router.get("/{id}")
 def get_one(
     id: int,
-    injector: Injector = Depends(lambda: router.injector),
+    injector: Injector = Depends(make_injector),
 ) -> UserSchemaOutput:
     user = UserCRUD(session=injector.get(Session)).read(id=id)
     response = UserSchemaOutput(**user.__dict__)
@@ -39,7 +39,7 @@ def get_one(
 @router.post("/")
 def post(
     user_schema: UserSchemaInput,
-    injector: Injector = Depends(lambda: router.injector),
+    injector: Injector = Depends(make_injector),
 ) -> UserSchemaOutput:
     with session_factory(bind=injector.get(Engine)) as session:
         user = UserCRUD(session=session).create(
@@ -53,7 +53,7 @@ def post(
 def put(
     id: int,
     user_schema: UserSchemaInput,
-    injector: Injector = Depends(lambda: router.injector),
+    injector: Injector = Depends(make_injector),
 ) -> UserSchemaOutput:
     with session_factory(bind=injector.get(Engine)) as session:
         user = UserCRUD(session=session).update(
@@ -67,7 +67,7 @@ def put(
 @router.delete("/{id}")
 def delete(
     id: int,
-    injector: Injector = Depends(lambda: router.injector),
+    injector: Injector = Depends(make_injector),
 ) -> UserSchemaOutput:
     with session_factory(bind=injector.get(Engine)) as session:
         user = UserCRUD(session=session).delete(id=id)

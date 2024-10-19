@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 
 from app.config import Config
 from app.db.utils.versions import migrate
-from app.endpoints.custom import App
 from app.endpoints.health.health import router as health_router
 from app.endpoints.users.users import router as users_router
 from app.interactors.health_check.interactors import HealthCheckProbe
@@ -76,10 +75,11 @@ def assemble_app(injector: Injector) -> Injector:
         migrate(config=config)
         yield
 
-    def make_app() -> App:
-        app = App(injector=injector)
-        app.include_router(users_router)
-        app.include_router(health_router)
+    def make_app() -> FastAPI:
+        app = FastAPI()
+        app.state.injector = injector
+        app.include_router(router=users_router)
+        app.include_router(router=health_router)
 
         return app
 

@@ -1,18 +1,18 @@
-from fastapi import Depends
+from fastapi import APIRouter, Depends
 from injector import Injector
 
-from app.endpoints.custom import Router
+from app.dependencies.injector import make_injector
 from app.endpoints.health.schema import HealthReport, HealthReportError
 from app.interactors.health_check.interfaces import HealthCheckProbeInterface
 
-router = Router(
+router = APIRouter(
     prefix="/health",
     tags=["health"],
 )
 
 
 @router.get("/", response_model=HealthReport | HealthReportError)
-def get(injector: Injector = Depends(lambda: router.injector)) -> dict:
+def get(injector: Injector = Depends(make_injector)) -> dict:
     health_check_probe = injector.get(HealthCheckProbeInterface)  # type: ignore[type-abstract]
 
     try:
