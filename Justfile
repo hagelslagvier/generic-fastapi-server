@@ -97,4 +97,5 @@ publish tag:
     docker tag ${APP_NAME}:latest ${DOCKER_HUB_USER}/${APP_NAME}:{{tag}}
     docker push ${DOCKER_HUB_USER}/${APP_NAME}:{{tag}}
 
-#  TODO: add make-erm
+make-erd:
+    python app/database/utils/introspection.py

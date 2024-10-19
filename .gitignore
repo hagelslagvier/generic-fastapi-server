@@ -4,6 +4,8 @@ volumes/
 
 .env
 
+*.svg
+
 .DS_Store
 
 ### Python template
