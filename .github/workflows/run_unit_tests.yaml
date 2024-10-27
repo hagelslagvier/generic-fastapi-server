@@ -1,4 +1,4 @@
-name: Run Unit Test
+name: Run Unit Tests
 
 on: [push]
 
