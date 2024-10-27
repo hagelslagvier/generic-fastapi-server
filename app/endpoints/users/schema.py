@@ -14,6 +14,6 @@ class UserSchemaInput(BaseModel):
 
 
 class UserSchemaOutput(UserSchemaInput):
-    id: int | None
+    id: int
     created_on: datetime
     updated_on: datetime
