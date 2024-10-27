@@ -1,25 +1,17 @@
-## FastAPI Template
+# FastAPI Template
 
----
 
-### NB.01
-If you get the following error:
-```text
-The virtual environment was not created successfully because ensurepip is not available. On
-Debian/Ubuntu systems, you need to install the python3-venv package using the following
-command...
-```
-then run the following command with **explicit minor version** as the following:
-```bash
-$ sudo apt-get install python3.8-venv
-```
-
-### NB.02 
-
-When setting value of `VENV` to `venv_dir` in `Justfile`, also exclude it in `ruff` config section 
-in `pyproject.toml` as following:
-```text
-[tool.ruff]
-exclude = ["venv_dir"]
-```
-For more, see the [link](https://docs.astral.sh/ruff/settings/#exclude).
+## Technology Stack and Features
+ 
+- ⚡️ [FastAPI](https://fastapi.tiangolo.com) for the Python backend API
+- 💾 [PostgreSQL](https://www.postgresql.org) as an SQL database
+- 🍁 [SQLAlchemy](https://docs.sqlalchemy.org/en/20/) as an ORM
+    - Generic ORM model as a convenience CRUD-operations base class
+- 🗺️ [Alembic](https://alembic.sqlalchemy.org/en/latest/) as a migration tool
+- 🔍 [Pydantic](https://docs.pydantic.dev) for the data validation and settings management
+- 🕵️ [mypy](https://mypy.readthedocs.io/en/stable/) for static type checks
+- 🧹 [ruff](https://docs.astral.sh/ruff/) for linting and code formatting
+- 🐋 [Docker Compose](https://www.docker.com) for development and production
+- ✅ Tests with [Pytest](https://pytest.org)
+- 🏗️ [Poetry](https://python-poetry.org) for managing dependencies and packaging
+- 🛬 [Just](https://just.systems/man/en/) as a command runner
