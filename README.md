@@ -12,6 +12,6 @@
 - 🕵️ [mypy](https://mypy.readthedocs.io/en/stable/) for static type checks
 - 🧹 [ruff](https://docs.astral.sh/ruff/) for linting and code formatting
 - 🐋 [Docker Compose](https://www.docker.com) for development and production
-- ✅ Tests with [Pytest](https://pytest.org)
+- ✅ Tests with [pytest](https://pytest.org)
 - 🏗️ [Poetry](https://python-poetry.org) for managing dependencies and packaging
 - 🛬 [Just](https://just.systems/man/en/) as a command runner
