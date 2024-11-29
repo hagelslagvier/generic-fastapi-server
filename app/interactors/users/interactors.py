@@ -1,4 +1,5 @@
-from app.database.orm.crud.generic import GenericCRUD
+from inzicht.crud.generic import GenericCRUD
+
 from app.database.orm.models import User
 
 

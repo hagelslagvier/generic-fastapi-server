@@ -4,7 +4,7 @@ from pydantic import NonNegativeInt, PositiveInt
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
-from app.database.orm.crud.generic import session_factory
+from app.database.orm.factories import session_factory
 from app.dependencies.injector import make_injector
 from app.endpoints.users.schema import UserSchemaInput, UserSchemaOutput
 from app.interactors.users.interactors import UserCRUD
