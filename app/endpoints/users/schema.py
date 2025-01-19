@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 class UserSchemaInput(BaseModel):
     login: str = Field(..., max_length=64)
-    password: str = Field(..., max_length=64)
+    password: str = Field(..., max_length=128)
     email: EmailStr
     is_email_confirmed: bool = False
     refresh_token: str | None = None

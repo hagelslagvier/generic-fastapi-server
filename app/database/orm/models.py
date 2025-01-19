@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from inzicht.declarative import DeclarativeBase
+from inzicht.declarative import DeclarativeBase  # type: ignore
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import mapped_column, relationship
 
@@ -18,7 +18,7 @@ class User(Base):
     __tablename__ = "users"
 
     login = mapped_column(String(64), unique=True, nullable=False)
-    password = mapped_column(String(64), nullable=False)
+    password = mapped_column(String(128), nullable=False)
     email = mapped_column(String(64), nullable=False)
     is_email_confirmed = mapped_column(Boolean, default=False)
     refresh_token = mapped_column(String, nullable=True)

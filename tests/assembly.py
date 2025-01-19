@@ -27,11 +27,21 @@ def assemble_test_config(injector: Injector | None) -> Injector:
     def make_config() -> Config:
         return Config(
             host=os.environ["HOST"],
-            port=os.environ["PORT"],
+            port=os.environ["PORT"],  # noqa
             db_url=os.environ["TEST_DB_URL"],
             alembic_config_path=os.environ["ALEMBIC_CONFIG_PATH"],
             db_migrations_path=os.environ["MIGRATIONS_PATH"],
             reload=os.getenv("RELOAD", False),
+            secret_key=os.environ["SECRET_KEY"],
+            algorithm=os.environ["ALGORITHM"],
+            refresh_token_expiration_minutes=os.environ[  # noqa
+                "REFRESH_TOKEN_EXPIRATION_MINUTES"
+            ],
+            access_token_expiration_minutes=os.environ[  # noqa
+                "ACCESS_TOKEN_EXPIRATION_MINUTES"
+            ],
+            key_length=os.environ["KEY_LENGTH"],  # noqa
+            iterations=os.environ["ITERATIONS"],  # noqa
         )
 
     injector = injector or Injector()
