@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from inzicht.declarative import DeclarativeBase  # type: ignore
+from inzicht import DeclarativeBase  # type: ignore
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import mapped_column, relationship
 
