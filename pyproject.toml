@@ -19,7 +19,7 @@ psutil = "^6.0.0"
 pyjwt = "^2.10.1"
 python-multipart = "^0.0.18"
 typer = "^0.15.1"
-inzicht = "^0.1.10"
+inzicht = "^0.1.11"
 
 
 [tool.poetry.group.dev.dependencies]

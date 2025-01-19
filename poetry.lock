@@ -412,13 +412,13 @@ dev = ["black (==23.3.0)", "build (==0.10.0)", "check-manifest (==0.49)", "click
 
 [[package]]
 name = "inzicht"
-version = "0.1.10"
+version = "0.1.11"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "inzicht-0.1.10-py3-none-any.whl", hash = "sha256:c577c543599bb23534da53ffa855deb7d5b34f067dea1235b9ceb4ca40423094"},
-    {file = "inzicht-0.1.10.tar.gz", hash = "sha256:50ef1f4c3e0ad0cddb55790abdb94fdc140934e96cce24d10a5ed07f7efea169"},
+    {file = "inzicht-0.1.11-py3-none-any.whl", hash = "sha256:6506627277115978da61171bdee8b3cd7b7b63bc37c4deabe23f8fe5a9a0f24b"},
+    {file = "inzicht-0.1.11.tar.gz", hash = "sha256:3d65bdb4e2938f2ae3e334f22623d146150a28b91ea50a8b0ed8f91b21499cb1"},
 ]
 
 [package.dependencies]
@@ -1672,4 +1672,4 @@ full = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "adece9aee1edc6f481aa17f654b571d534e4f11d57c967f5583be13e11a6af77"
+content-hash = "c2e3c96a0f14da5ec8cb29e430a41baf310d16a501f4f4b5b469e7f4a43799dc"
