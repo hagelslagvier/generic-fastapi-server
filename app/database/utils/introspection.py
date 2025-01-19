@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy import MetaData, create_engine
-from sqlalchemy_schemadisplay import create_schema_graph  # type: ignore
+from sqlalchemy_schemadisplay import create_schema_graph
 
 logging.basicConfig()
 logging.root.setLevel(logging.INFO)

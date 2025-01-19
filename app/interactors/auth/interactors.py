@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Any
 
 from inzicht import session_factory
 from sqlalchemy import Engine
@@ -39,10 +40,10 @@ class Auth(AuthInterface[User]):
     def authenticate(self, secret: str, hash: str) -> None:
         self.secret_manager.verify_secret(secret=secret, hash=hash)
 
-    def create_token(self, payload: dict, ttl: timedelta) -> str:
+    def create_token(self, payload: dict[str, Any], ttl: timedelta) -> str:
         token = self.token_manager.create_token(payload=payload, ttl=ttl)
         return token
 
-    def decode_token(self, token: str) -> dict:
+    def decode_token(self, token: str) -> dict[str, Any]:
         payload = self.token_manager.decode_token(token=token)
         return payload

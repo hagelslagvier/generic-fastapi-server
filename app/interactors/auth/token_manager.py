@@ -31,7 +31,7 @@ class TokenManager(TokenManagerInterface):
 
     def decode_token(self, token: str) -> dict[str, Any]:
         try:
-            payload = jwt.decode(
+            payload: dict[str, Any] = jwt.decode(
                 jwt=token, key=self.secret_key, algorithms=[self.algorithm]
             )
         except ExpiredJWTSignatureError as error:
@@ -47,4 +47,4 @@ class TokenManager(TokenManagerInterface):
                 f"Unknown error decoding token, token: '{token}'"
             ) from error
 
-        return payload  # type: ignore
+        return payload

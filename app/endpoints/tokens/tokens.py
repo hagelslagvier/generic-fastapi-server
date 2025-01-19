@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Any
 
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
@@ -20,7 +21,7 @@ router = APIRouter(
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     injector: Injector = Depends(make_injector),
-) -> dict:
+) -> dict[str, Any]:
     config = injector.get(Config)
     auth = injector.get(AuthInterface)
 
@@ -29,13 +30,13 @@ def login(
     try:
         user = auth.get_user(login=login)
     except UserNotFoundError:
-        # logging here
+        # TODO: logging here
         raise
 
     try:
         auth.authenticate(secret=password, hash=user.password)
     except SecretVerificationError:
-        # logging here
+        # TODO: logging here
         raise
 
     payload = {"sub": login}

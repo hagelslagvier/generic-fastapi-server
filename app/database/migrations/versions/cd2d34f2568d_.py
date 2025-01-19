@@ -6,6 +6,7 @@ Create Date: 2024-12-01 02:29:44.327895
 
 """
 from collections.abc import Sequence
+from typing import cast
 
 import sqlalchemy as sa
 from alembic import op
@@ -26,7 +27,7 @@ def upgrade() -> None:
         existing_type=postgresql.TIMESTAMP(timezone=True),
         type_=sa.DateTime(),
         existing_nullable=True,
-        existing_server_default=sa.text("now()"),  # type: ignore
+        existing_server_default=cast(str, sa.text("now()")),
     )
     op.alter_column(
         "confirmations",
@@ -34,7 +35,7 @@ def upgrade() -> None:
         existing_type=postgresql.TIMESTAMP(timezone=True),
         type_=sa.DateTime(),
         existing_nullable=True,
-        existing_server_default=sa.text("now()"),  # type: ignore
+        existing_server_default=cast(str, sa.text("now()")),
     )
     op.alter_column(
         "users",
@@ -75,7 +76,7 @@ def downgrade() -> None:
         existing_type=sa.DateTime(),
         type_=postgresql.TIMESTAMP(timezone=True),
         existing_nullable=True,
-        existing_server_default=sa.text("now()"),  # type: ignore
+        existing_server_default=cast(str, sa.text("now()")),
     )
     op.alter_column(
         "confirmations",
@@ -83,6 +84,6 @@ def downgrade() -> None:
         existing_type=sa.DateTime(),
         type_=postgresql.TIMESTAMP(timezone=True),
         existing_nullable=True,
-        existing_server_default=sa.text("now()"),  # type: ignore
+        existing_server_default=cast(str, sa.text("now()")),
     )
     # ### end Alembic commands ###

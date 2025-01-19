@@ -53,7 +53,7 @@ def test_if_can_approve_valid_secret(secret_manager: SecretManager) -> None:
     ],
 )
 def test_if_can_disapprove_invalid_secret(
-    secret_manager: SecretManager, invalid_secret: str, expected_error: Exception
+    secret_manager: SecretManager, invalid_secret: str, expected_error: type[Exception]
 ) -> None:
-    with pytest.raises(expected_error):  # type: ignore[call-overload]
+    with pytest.raises(expected_error):
         secret_manager.verify_secret(secret="hello", hash=invalid_secret)

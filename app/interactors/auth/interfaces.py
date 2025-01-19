@@ -36,9 +36,9 @@ class AuthInterface(ABC, Generic[UT]):
         pass
 
     @abstractmethod
-    def create_token(self, payload: dict, ttl: timedelta) -> str:
+    def create_token(self, payload: dict[str, Any], ttl: timedelta) -> str:
         pass
 
     @abstractmethod
-    def decode_token(self, token: str) -> dict:
+    def decode_token(self, token: str) -> dict[str, Any]:
         pass

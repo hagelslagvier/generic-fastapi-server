@@ -48,6 +48,10 @@ disallow_untyped_defs = true
 plugins = ["pydantic.mypy"]
 disable_error_code = ["type-abstract"]
 
+[[tool.mypy.overrides]]
+module = "sqlalchemy_schemadisplay.*"
+ignore_missing_imports = true
+
 [tool.coverage.run]
 source = ["app"]
 omit = [

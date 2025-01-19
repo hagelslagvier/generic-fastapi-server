@@ -58,7 +58,7 @@ def create_user(
 
     logger.info(f"User created: {user}")
 
-    return user  # type: ignore
+    return user
 
 
 def read_user(login: str, engine: Engine | None = None) -> User | None:
@@ -70,7 +70,7 @@ def read_user(login: str, engine: Engine | None = None) -> User | None:
         if len(found) == 1:
             [user] = found
             logger.info(f"User with login '{login}' retrieved: {user}")
-            return user  # type: ignore
+            return user
         else:
             logger.error(f"User with login '{login}' not found")
             return None
@@ -119,7 +119,7 @@ def update_user(
 
     logger.info(f"User with login '{login}' updated: {user}")
 
-    return user  # type: ignore
+    return user
 
 
 def delete_user(
@@ -139,7 +139,7 @@ def delete_user(
 
         deleted = UserCRUD(session=session).delete(id=user.id)
         logger.info(f"User with login '{login}' deleted: {user}")
-        return deleted  # type: ignore
+        return deleted
 
 
 def update_user_tokens(login: str, engine: Engine | None = None) -> User | None:
@@ -172,4 +172,4 @@ def update_user_tokens(login: str, engine: Engine | None = None) -> User | None:
 
     logger.info(f"User tokens updated: {user}")
 
-    return user  # type: ignore
+    return user

@@ -19,16 +19,18 @@ def get_user_from_token(
     try:
         payload = auth.decode_token(token=token)
     except InvalidTokenError:
-        # logging here
+        # TODO: logging here
         raise
 
     user_name = payload.get("sub")
     if user_name is None:
+        # TODO: logging here
         raise Exception
 
     try:
         user: User = auth.get_user(login=user_name)
     except Exception:
-        raise Exception
+        # TODO: logging here
+        raise
 
     return user
