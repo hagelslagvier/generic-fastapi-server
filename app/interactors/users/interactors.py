@@ -1,4 +1,4 @@
-from inzicht.crud.generic import GenericCRUD
+from inzicht.crud.generic import GenericCRUD  # type: ignore
 
 from app.database.orm.models import User
 
