@@ -1,5 +1,6 @@
 from starlette.testclient import TestClient
 
+from app.endpoints.health.schema import HealthStatus
 from tests.types import SideEffect
 
 
@@ -10,7 +11,7 @@ def test_if_can_get_health_report_when_healthy(
 
     assert response.status_code == 200
     assert response.json() == {
-        "status": "healthy",
+        "status": HealthStatus.HEALTHY,
         "uptime": "1:00:00",
         "cpu": 8,
         "ram": 32,
@@ -24,7 +25,7 @@ def test_if_can_get_health_report_when_unhealthy(
 
     assert response.status_code == 200
     assert response.json() == {
-        "status": "unhealthy",
+        "status": HealthStatus.UNHEALTHY,
         "error_type": "OSError",
         "error": "Foo",
     }
