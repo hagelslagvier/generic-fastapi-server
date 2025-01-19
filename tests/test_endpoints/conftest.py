@@ -3,10 +3,10 @@ from datetime import timedelta
 import pytest
 from fastapi import FastAPI
 from injector import Injector
+from inzicht import session_factory
 from sqlalchemy import Engine
 from starlette.testclient import TestClient
 
-from app.database.orm.factories import session_factory
 from app.interactors.health_check.interfaces import HealthCheckProbeInterface
 from app.interactors.users.interactors import UserCRUD
 from tests.assembly import test_root_injector
