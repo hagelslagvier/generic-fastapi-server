@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 import pytest
 from fastapi import FastAPI
 from injector import Injector
@@ -7,7 +5,7 @@ from inzicht import session_factory
 from sqlalchemy import Engine
 from starlette.testclient import TestClient
 
-from app.interactors.liveness.interfaces import LivenessCheckProbeInterface
+from app.interactors.liveness.interfaces import LivenessProbeInterface
 from app.interactors.users.interactors import UserCRUD
 from tests.assembly import test_root_injector
 from tests.types import SideEffect
@@ -36,32 +34,20 @@ def test_injector() -> Injector:
 
 @pytest.fixture
 def healthy_probe(test_injector: Injector) -> SideEffect:
-    class HealthyProbe(LivenessCheckProbeInterface):
-        def get_uptime(self) -> timedelta:
-            return timedelta(hours=1)
+    class HealthyProbe(LivenessProbeInterface):
+        def is_alive(self) -> bool:
+            return True
 
-        def get_cpu_usage(self) -> int:
-            return 8
-
-        def get_ram_usage(self) -> int:
-            return 32
-
-    test_injector.binder.bind(LivenessCheckProbeInterface, to=HealthyProbe())
+    test_injector.binder.bind(LivenessProbeInterface, to=HealthyProbe())
 
 
 @pytest.fixture
 def faulty_probe(test_injector: Injector) -> SideEffect:
-    class FaultyProbe(LivenessCheckProbeInterface):
-        def get_uptime(self) -> timedelta:
-            raise OSError("Foo")
+    class UnhealthyProbe(LivenessProbeInterface):
+        def is_alive(self) -> bool:
+            return False
 
-        def get_cpu_usage(self) -> int:
-            return 8
-
-        def get_ram_usage(self) -> int:
-            return 32
-
-    test_injector.binder.bind(LivenessCheckProbeInterface, to=FaultyProbe())
+    test_injector.binder.bind(LivenessProbeInterface, to=UnhealthyProbe())
 
 
 @pytest.fixture

@@ -23,8 +23,8 @@ from app.interactors.auth.interfaces import (
 )
 from app.interactors.auth.secret_manager import SecretManager
 from app.interactors.auth.token_manager import TokenManager
-from app.interactors.liveness.interactors import LivenessCheckProbe
-from app.interactors.liveness.interfaces import LivenessCheckProbeInterface
+from app.interactors.liveness.interactors import LivenessProbe
+from app.interactors.liveness.interfaces import LivenessProbeInterface
 from tests.fake import get_user_from_token_stub
 
 ROOT_PATH = Path(__file__).parents[1]
@@ -87,7 +87,9 @@ def assemble_db(injector: Injector) -> Injector:
 def assemble_interactors(injector: Injector) -> Injector:
     config = injector.get(Config)
 
-    injector.binder.bind(LivenessCheckProbeInterface, LivenessCheckProbe())
+    injector.binder.bind(
+        LivenessProbeInterface, LivenessProbe(CPU_LIMIT=95, RAM_LIMIT=95)
+    )
 
     def make_secret_manager() -> SecretManagerInterface:
         secret_manager = SecretManager(

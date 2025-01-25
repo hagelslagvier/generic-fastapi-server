@@ -1,36 +1,16 @@
 from abc import ABC, abstractmethod
-from datetime import timedelta
 
 
-class LivenessCheckProbeInterface(ABC):
+class LivenessProbeInterface(ABC):
     """
-    Abstract interface for a liveness check probe, which provides methods
-    to retrieve system health metrics such as uptime, CPU usage, and RAM usage.
+    Defines the interface for implementing a liveness probe.
     """
 
     @abstractmethod
-    def get_uptime(self) -> timedelta:
+    def is_alive(self) -> bool:
         """
-        Retrieve the system's uptime.
+        Check if the service or application is alive and functioning.
 
         Returns:
-            timedelta: The duration for which the system has been running.
-        """
-
-    @abstractmethod
-    def get_cpu_usage(self) -> int:
-        """
-        Retrieve the current CPU usage percentage.
-
-        Returns:
-            int: The CPU usage as a percentage (0-100).
-        """
-
-    @abstractmethod
-    def get_ram_usage(self) -> int:
-        """
-        Retrieve the current RAM usage percentage.
-
-        Returns:
-            int: The RAM usage as a percentage (0-100).
+            bool: True if the system is alive, False otherwise.
         """
