@@ -24,7 +24,7 @@ services:
       - ${PORT}:${PORT}
 
   db:
-    container_name: db
+    container_name: tiny-db
     image: postgres
     env_file:
       - .env.base

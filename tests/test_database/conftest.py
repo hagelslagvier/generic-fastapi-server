@@ -2,6 +2,7 @@ import pytest
 from inzicht import session_factory
 from sqlalchemy import Engine
 
+from app.interactors.readiness.interactors import ReadinessStatusCRUD
 from app.interactors.users.interactors import UserCRUD
 
 
@@ -18,3 +19,6 @@ def content(engine: Engine) -> None:
             "is_admin": True,
         }
         UserCRUD(session=session).create(payload=payload)
+
+        payload = {"hostname": "foo", "ready": False}
+        ReadinessStatusCRUD(session=session).create(payload=payload)

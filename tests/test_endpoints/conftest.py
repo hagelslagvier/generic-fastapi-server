@@ -6,6 +6,7 @@ from sqlalchemy import Engine
 from starlette.testclient import TestClient
 
 from app.interactors.liveness.interfaces import LivenessProbeInterface
+from app.interactors.readiness.interfaces import ReadinessProbeInterface
 from app.interactors.users.interactors import UserCRUD
 from tests.assembly import test_root_injector
 from tests.types import SideEffect
@@ -48,6 +49,30 @@ def faulty_probe(test_injector: Injector) -> SideEffect:
             return False
 
     test_injector.binder.bind(LivenessProbeInterface, to=UnhealthyProbe())
+
+
+@pytest.fixture
+def ready_probe(test_injector: Injector) -> SideEffect:
+    class ReadyProbe(ReadinessProbeInterface):
+        def is_ready(self) -> bool:
+            return True
+
+        def set_ready(self, ready: bool) -> None:
+            raise NotImplementedError()
+
+    test_injector.binder.bind(ReadinessProbeInterface, to=ReadyProbe())
+
+
+@pytest.fixture
+def unready_probe(test_injector: Injector) -> SideEffect:
+    class UnreadyProbe(ReadinessProbeInterface):
+        def is_ready(self) -> bool:
+            return False
+
+        def set_ready(self, ready: bool) -> None:
+            raise NotImplementedError()
+
+    test_injector.binder.bind(ReadinessProbeInterface, to=UnreadyProbe())
 
 
 @pytest.fixture

@@ -13,6 +13,7 @@ from app.config import Config
 from app.database.utils.versioning import migrate
 from app.dependencies.auth import get_user_from_token
 from app.endpoints.liveness.liveness import router as liveness_router
+from app.endpoints.readiness.readiness import router as readiness_router
 from app.endpoints.tokens.tokens import router as token_router
 from app.endpoints.users.users import router as users_router
 from app.interactors.auth.interactors import Auth
@@ -25,6 +26,8 @@ from app.interactors.auth.secret_manager import SecretManager
 from app.interactors.auth.token_manager import TokenManager
 from app.interactors.liveness.interactors import LivenessProbe
 from app.interactors.liveness.interfaces import LivenessProbeInterface
+from app.interactors.readiness.interactors import ReadinessProbe
+from app.interactors.readiness.interfaces import ReadinessProbeInterface
 from tests.fake import get_user_from_token_stub
 
 ROOT_PATH = Path(__file__).parents[1]
@@ -91,6 +94,10 @@ def assemble_interactors(injector: Injector) -> Injector:
         LivenessProbeInterface, LivenessProbe(CPU_LIMIT=95, RAM_LIMIT=95)
     )
 
+    injector.binder.bind(
+        ReadinessProbeInterface, ReadinessProbe(bind=injector.get(Engine))
+    )
+
     def make_secret_manager() -> SecretManagerInterface:
         secret_manager = SecretManager(
             key_length=config.key_length, iterations=config.iterations
@@ -138,6 +145,7 @@ def assemble_app(injector: Injector) -> Injector:
         app.state.injector = injector
         app.include_router(router=users_router)
         app.include_router(router=liveness_router)
+        app.include_router(router=readiness_router)
         app.include_router(router=token_router)
         override_dependencies(app=app)
         return app
