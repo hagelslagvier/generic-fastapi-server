@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 
 import psutil
 
-from app.interactors.health_check.interfaces import HealthCheckProbeInterface
+from app.interactors.liveness.interfaces import LivenessCheckProbeInterface
 
 
-class HealthCheckProbe(HealthCheckProbeInterface):
+class LivenessCheckProbe(LivenessCheckProbeInterface):
     def get_uptime(self) -> timedelta:
         now = datetime.now()
         boot_time = datetime.fromtimestamp(psutil.boot_time())

@@ -74,7 +74,7 @@ stop:
 up:
     docker compose --env-file .env.production up
 
-check-health:
+check-liveness:
     docker compose --env-file .env.production ps
 
 install:

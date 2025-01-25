@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from app.config import Config
 from app.database.utils.versioning import migrate
 from app.dependencies.auth import get_user_from_token
-from app.endpoints.health.health import router as health_router
+from app.endpoints.liveness.liveness import router as liveness_router
 from app.endpoints.tokens.tokens import router as token_router
 from app.endpoints.users.users import router as users_router
 from app.interactors.auth.interactors import Auth
@@ -23,8 +23,8 @@ from app.interactors.auth.interfaces import (
 )
 from app.interactors.auth.secret_manager import SecretManager
 from app.interactors.auth.token_manager import TokenManager
-from app.interactors.health_check.interactors import HealthCheckProbe
-from app.interactors.health_check.interfaces import HealthCheckProbeInterface
+from app.interactors.liveness.interactors import LivenessCheckProbe
+from app.interactors.liveness.interfaces import LivenessCheckProbeInterface
 from tests.fake import get_user_from_token_stub
 
 ROOT_PATH = Path(__file__).parents[1]
@@ -87,7 +87,7 @@ def assemble_db(injector: Injector) -> Injector:
 def assemble_interactors(injector: Injector) -> Injector:
     config = injector.get(Config)
 
-    injector.binder.bind(HealthCheckProbeInterface, HealthCheckProbe())
+    injector.binder.bind(LivenessCheckProbeInterface, LivenessCheckProbe())
 
     def make_secret_manager() -> SecretManagerInterface:
         secret_manager = SecretManager(
@@ -135,7 +135,7 @@ def assemble_app(injector: Injector) -> Injector:
         app = FastAPI()
         app.state.injector = injector
         app.include_router(router=users_router)
-        app.include_router(router=health_router)
+        app.include_router(router=liveness_router)
         app.include_router(router=token_router)
         override_dependencies(app=app)
         return app

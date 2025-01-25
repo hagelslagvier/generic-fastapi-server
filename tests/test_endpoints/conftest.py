@@ -7,7 +7,7 @@ from inzicht import session_factory
 from sqlalchemy import Engine
 from starlette.testclient import TestClient
 
-from app.interactors.health_check.interfaces import HealthCheckProbeInterface
+from app.interactors.liveness.interfaces import LivenessCheckProbeInterface
 from app.interactors.users.interactors import UserCRUD
 from tests.assembly import test_root_injector
 from tests.types import SideEffect
@@ -36,7 +36,7 @@ def test_injector() -> Injector:
 
 @pytest.fixture
 def healthy_probe(test_injector: Injector) -> SideEffect:
-    class HealthyProbe(HealthCheckProbeInterface):
+    class HealthyProbe(LivenessCheckProbeInterface):
         def get_uptime(self) -> timedelta:
             return timedelta(hours=1)
 
@@ -46,12 +46,12 @@ def healthy_probe(test_injector: Injector) -> SideEffect:
         def get_ram_usage(self) -> int:
             return 32
 
-    test_injector.binder.bind(HealthCheckProbeInterface, to=HealthyProbe())
+    test_injector.binder.bind(LivenessCheckProbeInterface, to=HealthyProbe())
 
 
 @pytest.fixture
 def faulty_probe(test_injector: Injector) -> SideEffect:
-    class FaultyProbe(HealthCheckProbeInterface):
+    class FaultyProbe(LivenessCheckProbeInterface):
         def get_uptime(self) -> timedelta:
             raise OSError("Foo")
 
@@ -61,7 +61,7 @@ def faulty_probe(test_injector: Injector) -> SideEffect:
         def get_ram_usage(self) -> int:
             return 32
 
-    test_injector.binder.bind(HealthCheckProbeInterface, to=FaultyProbe())
+    test_injector.binder.bind(LivenessCheckProbeInterface, to=FaultyProbe())
 
 
 @pytest.fixture

@@ -3,20 +3,20 @@ from enum import StrEnum
 from pydantic import BaseModel
 
 
-class HealthStatus(StrEnum):
+class LivenessStatus(StrEnum):
     HEALTHY = "HEALTHY"
     READY = "READY"
     UNHEALTHY = "UNHEALTHY"
 
 
-class HealthReport(BaseModel):
-    status: HealthStatus
+class LivenessReport(BaseModel):
+    status: LivenessStatus
     uptime: str
     cpu: int
     ram: int
 
 
-class HealthReportError(BaseModel):
-    status: HealthStatus
+class LivenessReportError(BaseModel):
+    status: LivenessStatus
     error_type: str
     error: str

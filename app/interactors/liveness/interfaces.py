@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from datetime import timedelta
 
 
-class HealthCheckProbeInterface(ABC):
+class LivenessCheckProbeInterface(ABC):
     """
-    Abstract interface for a health check probe, which provides methods
+    Abstract interface for a liveness check probe, which provides methods
     to retrieve system health metrics such as uptime, CPU usage, and RAM usage.
     """
 
