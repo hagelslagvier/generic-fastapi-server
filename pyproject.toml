@@ -55,7 +55,9 @@ ignore_missing_imports = true
 [tool.coverage.run]
 source = ["app"]
 omit = [
+    "app/database/migrations/env.py",
     "app/database/utils/*",
+    "app/assembly.py",
     "app/run.py"
 ]
 
