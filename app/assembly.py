@@ -46,12 +46,15 @@ for path in [
 
 def assemble_config(injector: Injector | None = None) -> Injector:
     def make_config() -> Config:
+        ALEMBIC_CONFIG_PATH = ROOT_PATH / Path(os.environ["ALEMBIC_CONFIG_PATH"])
+        DB_MIGRATIONS_PATH = ROOT_PATH / Path(os.environ["MIGRATIONS_PATH"])
+
         return Config(
             host=os.environ["HOST"],
             port=os.environ["PORT"],  # noqa
             db_url=os.environ["DB_URL"],
-            alembic_config_path=os.environ["ALEMBIC_CONFIG_PATH"],
-            db_migrations_path=os.environ["MIGRATIONS_PATH"],
+            alembic_config_path=str(ALEMBIC_CONFIG_PATH),
+            db_migrations_path=str(DB_MIGRATIONS_PATH),
             reload=os.getenv("RELOAD", False),
             secret_key=os.environ["SECRET_KEY"],
             algorithm=os.environ["ALGORITHM"],
@@ -134,14 +137,16 @@ def override_dependencies(app: FastAPI) -> None:
 
 def assemble_app(injector: Injector) -> Injector:
     config = injector.get(Config)
+    readiness_probe = injector.get(ReadinessProbeInterface)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator:
         migrate(config=config)
+        readiness_probe.set_ready(True)
         yield
 
     def make_app() -> FastAPI:
-        app = FastAPI()
+        app = FastAPI(lifespan=lifespan)
         app.state.injector = injector
         app.include_router(router=users_router)
         app.include_router(router=liveness_router)
