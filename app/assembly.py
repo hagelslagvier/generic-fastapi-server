@@ -5,13 +5,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from injector import Injector
+from injector import Injector, singleton
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
 from app.config import Config
 from app.database.utils.versioning import migrate
-from app.dependencies.auth import get_user_from_token
 from app.endpoints.liveness.liveness import router as liveness_router
 from app.endpoints.readiness.readiness import router as readiness_router
 from app.endpoints.tokens.tokens import router as token_router
@@ -28,7 +27,6 @@ from app.interactors.liveness.interactors import LivenessProbe
 from app.interactors.liveness.interfaces import LivenessProbeInterface
 from app.interactors.readiness.interactors import ReadinessProbe
 from app.interactors.readiness.interfaces import ReadinessProbeInterface
-from tests.fake import get_user_from_token_stub
 
 ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"
@@ -131,17 +129,11 @@ def assemble_interactors(injector: Injector) -> Injector:
     return injector
 
 
-def override_dependencies(app: FastAPI) -> None:
-    app.dependency_overrides[get_user_from_token] = get_user_from_token_stub
-
-
 def assemble_app(injector: Injector) -> Injector:
-    config = injector.get(Config)
-    readiness_probe = injector.get(ReadinessProbeInterface)
-
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator:
-        migrate(config=config)
+        migrate(config=injector.get(Config))
+        readiness_probe = injector.get(ReadinessProbeInterface)
         readiness_probe.set_ready(True)
         yield
 
@@ -152,10 +144,13 @@ def assemble_app(injector: Injector) -> Injector:
         app.include_router(router=liveness_router)
         app.include_router(router=readiness_router)
         app.include_router(router=token_router)
-        override_dependencies(app=app)
         return app
 
-    injector.binder.bind(FastAPI, to=make_app)
+    injector.binder.bind(
+        FastAPI,
+        to=make_app,
+        scope=singleton,  # to override dependencies in tests
+    )
 
     return injector
 

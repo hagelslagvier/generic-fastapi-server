@@ -2,12 +2,15 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from fastapi import FastAPI
 from injector import Injector, singleton
 from sqlalchemy import Engine, StaticPool, create_engine
 from sqlalchemy.orm import Session
 
 from app.assembly import assemble_app, assemble_interactors
 from app.config import Config
+from app.dependencies.auth import get_user_from_token
+from tests.fake import get_user_from_token_stub
 
 ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"
@@ -21,6 +24,10 @@ for path in [
 ]:
     if path.exists() and path.is_file():
         load_dotenv(path)
+
+
+def override_dependencies(app: FastAPI) -> None:
+    app.dependency_overrides[get_user_from_token] = get_user_from_token_stub
 
 
 def assemble_test_config(injector: Injector | None) -> Injector:
@@ -70,8 +77,15 @@ def assemble_test_db(injector: Injector) -> Injector:
     return injector
 
 
+def assemble_test_app(injector: Injector) -> Injector:
+    assemble_app(injector=injector)
+    override_dependencies(app=injector.get(FastAPI))
+
+    return injector
+
+
 test_root_injector = Injector()
 assemble_test_config(test_root_injector)
 assemble_test_db(test_root_injector)
 assemble_interactors(test_root_injector)
-assemble_app(test_root_injector)
+assemble_test_app(test_root_injector)
