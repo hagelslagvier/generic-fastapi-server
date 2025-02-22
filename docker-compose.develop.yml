@@ -1,9 +1,9 @@
-version: "3"
-
 services:
   app:
-    container_name: ${APP_NAME}
+    container_name: ${APP_NAME}-app
     image: ${APP_NAME}:latest
+    env_file:
+      - .env.develop
     build:
       context: .
       args:
@@ -12,22 +12,13 @@ services:
         PYTHON_IMAGE: ${PYTHON_IMAGE}
     depends_on:
       - db
-    healthcheck:
-      test: ["CMD", "curl --fail http://0.0.0.0:8000/health/ || exit 1"]
-      interval: 5s
-      timeout: 1s
-      retries: 1
-
-    env_file:
-      - .env.production
     ports:
-      - ${PORT}:${PORT}
-
+      - "8073:8073"
   db:
-    container_name: tiny-db
-    image: postgres
+    container_name: ${APP_NAME}-db
+    image: postgres:latest
     env_file:
-      - .env.base
+      - .env.develop
     volumes:
       - ./volumes/postgres_data:/var/lib/postgresql/data
     ports:

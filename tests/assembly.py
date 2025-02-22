@@ -17,8 +17,8 @@ ENV_BASE_PATH = ROOT_PATH / ".env.base"
 ENV_DEVELOPMENT_PATH = ROOT_PATH / ".env.development"
 
 for path in [
-    ENV_BASE_PATH,  # dev + prod
-    ENV_DEVELOPMENT_PATH,  # dev only
+    ENV_BASE_PATH,
+    ENV_DEVELOPMENT_PATH,
 ]:
     if path.exists() and path.is_file():
         load_dotenv(path)
