@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from app.assembly import root_injector
-from app.config import Config
+from app.assembly.assembly import root_injector
 from app.database.orm import models
+from app.settings.config import Config
 
 APP_CONFIG = root_injector.get(Config)
 
@@ -13,7 +13,7 @@ APP_CONFIG = root_injector.get(Config)
 # access to the values within the .ini file in use.
 config = context.config
 config.set_main_option(
-    "sqlalchemy.url", APP_CONFIG.db_url
+    "sqlalchemy.url", APP_CONFIG.persistence.db_url
 )  # instead of setting sqlalchemy.url in alembic.ini
 
 # Interpret the config file for Python logging.
