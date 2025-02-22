@@ -111,7 +111,7 @@ def assemble_interactors(injector: Injector) -> Injector:
     config = injector.get(Config)
 
     injector.binder.bind(
-        LivenessProbeInterface, LivenessProbe(CPU_LIMIT=95, RAM_LIMIT=95)
+        LivenessProbeInterface, LivenessProbe(cpu_limit=95, ram_limit=95)
     )
 
     injector.binder.bind(ReadinessProbeInterface, ReadinessProbe())

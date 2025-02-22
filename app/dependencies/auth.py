@@ -4,6 +4,7 @@ from injector import Injector
 
 from app.database.orm.models import User
 from app.dependencies.injector import make_injector
+from app.interactors.auth.errors import UserNotFoundError
 from app.interactors.auth.interfaces import AuthInterface
 from app.interactors.auth.token_manager import InvalidTokenError
 
@@ -23,10 +24,10 @@ def get_user_from_token(
     injector: Injector = Depends(make_injector),
     token: str | None = Depends(get_token),
 ) -> User | None:
-    auth = injector.get(AuthInterface)
-
-    if token is None:
+    if token is None or token == "":
         return None
+
+    auth = injector.get(AuthInterface)
 
     try:
         payload = auth.decode_token(token=token)
@@ -39,7 +40,7 @@ def get_user_from_token(
 
     try:
         user: User = auth.get_user(login=user_name)
-    except Exception:
+    except UserNotFoundError:
         return None
 
     return user
