@@ -25,5 +25,5 @@ def test_if_can_check_liveness(cpu_usage: int, ram_usage: int, alive: bool) -> N
         psutil_mock.cpu_percent.return_value = cpu_usage
         psutil_mock.virtual_memory.return_value = Mock(percent=ram_usage)
 
-        probe = LivenessProbe(CPU_LIMIT=95, RAM_LIMIT=95)
+        probe = LivenessProbe(cpu_limit=95, ram_limit=95)
         assert probe.is_alive() is alive

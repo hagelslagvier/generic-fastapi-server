@@ -4,9 +4,9 @@ from app.interactors.liveness.interfaces import LivenessProbeInterface
 
 
 class LivenessProbe(LivenessProbeInterface):
-    def __init__(self, CPU_LIMIT: int, RAM_LIMIT: int) -> None:
-        self.cpu_limit = CPU_LIMIT
-        self.ram_limit = RAM_LIMIT
+    def __init__(self, cpu_limit: int, ram_limit: int) -> None:
+        self.cpu_limit = cpu_limit
+        self.ram_limit = ram_limit
 
     def is_alive(self) -> bool:
         if not 0 <= self._get_cpu_usage() <= self.cpu_limit:
