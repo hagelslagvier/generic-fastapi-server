@@ -1,0 +1,19 @@
+services:
+  app:
+    container_name: ${APP_NAME}-app
+    image: ${APP_NAME}:latest
+    env_file:
+      - .env.production
+    depends_on:
+      - db
+    ports:
+      - "8073:8073"
+  db:
+    container_name: ${APP_NAME}-db
+    image: postgres:latest
+    env_file:
+      - .env.production
+    volumes:
+      - ./volumes/postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
