@@ -2,7 +2,7 @@ from typing import TypeVar
 
 from inzicht import DeclarativeBase
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, func
-from sqlalchemy.orm import MappedColumn, mapped_column, relationship
+from sqlalchemy.orm import mapped_column, relationship
 
 T = TypeVar("T", bound="Base")
 
@@ -39,15 +39,3 @@ class Confirmation(Base):
 
     def __repr__(self) -> str:
         return f"Confirmation(id={self.id}, user={self.user})"
-
-
-class ReadinessStatus(Base):
-    __tablename__ = "readiness_statuses"
-
-    hostname: MappedColumn[str] = mapped_column(
-        String(128), unique=True, nullable=False
-    )
-    ready: MappedColumn[bool] = mapped_column(Boolean, default=False)
-
-    def __repr__(self) -> str:
-        return f"ReadinessStatus(id={self.id}, hostname={self.hostname}, ready={self.ready})"
