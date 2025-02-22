@@ -5,17 +5,19 @@ import uvicorn
 from fastapi import FastAPI
 
 ROOT = Path(__file__).parents[1]
-
 sys.path.append(str(ROOT))
 
+from app.assembly.assembly import root_injector  # noqa
+from app.settings.config import Config  # noqa
 
-from app.assembly import root_injector  # noqa: E402
-
+config = root_injector.get(Config)
 app = root_injector.get(FastAPI)
 
 
 if __name__ == "__main__":
-    from app.config import Config
-
-    config = root_injector.get(Config)
-    uvicorn.run("run:app", host=config.host, port=config.port, reload=config.reload)
+    uvicorn.run(
+        "run:app",
+        host=config.server.host,
+        port=config.server.port,
+        reload=config.server.reload,
+    )

@@ -7,20 +7,18 @@ from injector import Injector, singleton
 from sqlalchemy import Engine, StaticPool, create_engine
 from sqlalchemy.orm import Session
 
-from app.assembly import assemble_app, assemble_interactors
-from app.config import Config
+from app.assembly.assembly import assemble_app, assemble_interactors
 from app.dependencies.auth import get_user_from_token
+from app.settings.config import AuthConfig, Config, PersistenceConfig, ServerConfig
 from tests.fake import get_user_from_token_stub
 
 ROOT_PATH = Path(__file__).parents[1]
 ENV_BASE_PATH = ROOT_PATH / ".env.base"
-ENV_PRODUCTION = ROOT_PATH / ".env"
 ENV_DEVELOPMENT_PATH = ROOT_PATH / ".env.development"
 
 for path in [
     ENV_BASE_PATH,  # dev + prod
     ENV_DEVELOPMENT_PATH,  # dev only
-    ENV_PRODUCTION,  # prod only (see Dockerfile: COPY .env.production .env)
 ]:
     if path.exists() and path.is_file():
         load_dotenv(path)
@@ -32,13 +30,19 @@ def override_dependencies(app: FastAPI) -> None:
 
 def assemble_test_config(injector: Injector | None) -> Injector:
     def make_config() -> Config:
-        return Config(
+        server_config = ServerConfig(
             host=os.environ["HOST"],
             port=os.environ["PORT"],  # noqa
-            db_url=os.environ["TEST_DB_URL"],
-            alembic_config_path=os.environ["ALEMBIC_CONFIG_PATH"],
-            db_migrations_path=os.environ["MIGRATIONS_PATH"],
             reload=os.getenv("RELOAD", False),
+        )
+
+        persistence_config = PersistenceConfig(
+            db_url=os.environ["TEST_DB_URL"],
+            db_migrations_path=os.environ["ALEMBIC_CONFIG_PATH"],
+            alembic_config_path=os.environ["MIGRATIONS_PATH"],
+        )
+
+        auth_config = AuthConfig(
             secret_key=os.environ["SECRET_KEY"],
             algorithm=os.environ["ALGORITHM"],
             refresh_token_expiration_minutes=os.environ[  # noqa
@@ -51,6 +55,12 @@ def assemble_test_config(injector: Injector | None) -> Injector:
             iterations=os.environ["ITERATIONS"],  # noqa
         )
 
+        return Config(
+            server=server_config,
+            persistence=persistence_config,
+            auth=auth_config,
+        )
+
     injector = injector or Injector()
     injector.binder.bind(Config, to=make_config)
 
@@ -61,7 +71,7 @@ def assemble_test_db(injector: Injector) -> Injector:
     def make_engine() -> Engine:
         config = injector.get(Config)
         return create_engine(
-            url=config.db_url,
+            url=config.persistence.db_url,
             connect_args={"check_same_thread": False},
             poolclass=StaticPool,
         )

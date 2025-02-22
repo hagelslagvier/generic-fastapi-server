@@ -1,3 +1,5 @@
+import json
+import logging
 import os
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -9,7 +11,6 @@ from injector import Injector, singleton
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
-from app.config import Config
 from app.database.utils.versioning import migrate
 from app.endpoints.liveness.liveness import router as liveness_router
 from app.endpoints.readiness.readiness import router as readiness_router
@@ -27,19 +28,21 @@ from app.interactors.liveness.interactors import LivenessProbe
 from app.interactors.liveness.interfaces import LivenessProbeInterface
 from app.interactors.readiness.interactors import ReadinessProbe
 from app.interactors.readiness.interfaces import ReadinessProbeInterface
+from app.settings.config import AuthConfig, Config, PersistenceConfig, ServerConfig
 
-ROOT_PATH = Path(__file__).parents[1]
-ENV_BASE_PATH = ROOT_PATH / ".env.base"
-ENV_PRODUCTION = ROOT_PATH / ".env"
-ENV_DEVELOPMENT_PATH = ROOT_PATH / ".env.development"
+logger = logging.getLogger(__name__)
 
+
+ROOT_PATH = Path(__file__).parents[2]
+ENV_DEVELOPMENT_PATH = ROOT_PATH / ".env.develop"
 for path in [
-    ENV_BASE_PATH,  # dev + prod
-    ENV_DEVELOPMENT_PATH,  # dev only
-    ENV_PRODUCTION,  # prod only (see Dockerfile: COPY .env.production .env)
+    ENV_DEVELOPMENT_PATH,
 ]:
     if path.exists() and path.is_file():
+        logger.info(f"Loading ENV file from path: '{path}'")
         load_dotenv(path)
+    else:
+        logger.warning(f"Skipping ENV file with path: '{path}'")
 
 
 def assemble_config(injector: Injector | None = None) -> Injector:
@@ -47,13 +50,19 @@ def assemble_config(injector: Injector | None = None) -> Injector:
         ALEMBIC_CONFIG_PATH = ROOT_PATH / Path(os.environ["ALEMBIC_CONFIG_PATH"])
         DB_MIGRATIONS_PATH = ROOT_PATH / Path(os.environ["MIGRATIONS_PATH"])
 
-        return Config(
+        server_config = ServerConfig(
             host=os.environ["HOST"],
             port=os.environ["PORT"],  # noqa
-            db_url=os.environ["DB_URL"],
-            alembic_config_path=str(ALEMBIC_CONFIG_PATH),
-            db_migrations_path=str(DB_MIGRATIONS_PATH),
             reload=os.getenv("RELOAD", False),
+        )
+
+        persistence_config = PersistenceConfig(
+            db_url=os.environ["DB_URL"],
+            db_migrations_path=str(DB_MIGRATIONS_PATH),
+            alembic_config_path=str(ALEMBIC_CONFIG_PATH),
+        )
+
+        auth_config = AuthConfig(
             secret_key=os.environ["SECRET_KEY"],
             algorithm=os.environ["ALGORITHM"],
             refresh_token_expiration_minutes=os.environ[  # noqa
@@ -66,8 +75,18 @@ def assemble_config(injector: Injector | None = None) -> Injector:
             iterations=os.environ["ITERATIONS"],  # noqa
         )
 
+        config = Config(
+            server=server_config,
+            persistence=persistence_config,
+            auth=auth_config,
+        )
+
+        logger.info(f"CONFIG: {json.dumps(config.model_dump(), indent=4, default=str)}")
+
+        return config
+
     injector = injector or Injector()
-    injector.binder.bind(Config, to=make_config)
+    injector.binder.bind(Config, to=make_config, scope=singleton)
 
     return injector
 
@@ -75,7 +94,7 @@ def assemble_config(injector: Injector | None = None) -> Injector:
 def assemble_db(injector: Injector) -> Injector:
     def make_engine() -> Engine:
         config = injector.get(Config)
-        return create_engine(url=config.db_url)
+        return create_engine(url=config.persistence.db_url)
 
     injector.binder.bind(Engine, to=make_engine)
 
@@ -95,13 +114,12 @@ def assemble_interactors(injector: Injector) -> Injector:
         LivenessProbeInterface, LivenessProbe(CPU_LIMIT=95, RAM_LIMIT=95)
     )
 
-    injector.binder.bind(
-        ReadinessProbeInterface, ReadinessProbe(bind=injector.get(Engine))
-    )
+    injector.binder.bind(ReadinessProbeInterface, ReadinessProbe())
 
     def make_secret_manager() -> SecretManagerInterface:
         secret_manager = SecretManager(
-            key_length=config.key_length, iterations=config.iterations
+            key_length=config.auth.key_length,
+            iterations=config.auth.iterations,
         )
         return secret_manager
 
@@ -109,7 +127,8 @@ def assemble_interactors(injector: Injector) -> Injector:
 
     def make_token_manager() -> TokenManagerInterface:
         token_manager = TokenManager(
-            secret_key=config.secret_key, algorithm=config.algorithm
+            secret_key=config.auth.secret_key,
+            algorithm=config.auth.algorithm,
         )
         return token_manager
 
@@ -120,7 +139,7 @@ def assemble_interactors(injector: Injector) -> Injector:
             engine=injector.get(Engine),
             secret_manager=injector.get(SecretManagerInterface),
             token_manager=injector.get(TokenManagerInterface),
-            token_ttl=config.access_token_expiration_minutes,
+            token_ttl=config.auth.access_token_expiration_minutes,
         )
         return auth
 
@@ -136,14 +155,16 @@ def assemble_app(injector: Injector) -> Injector:
         readiness_probe = injector.get(ReadinessProbeInterface)
         readiness_probe.set_ready(True)
         yield
+        readiness_probe.set_ready(False)
 
     def make_app() -> FastAPI:
         app = FastAPI(lifespan=lifespan)
         app.state.injector = injector
-        app.include_router(router=users_router)
         app.include_router(router=liveness_router)
         app.include_router(router=readiness_router)
         app.include_router(router=token_router)
+        app.include_router(router=users_router)
+
         return app
 
     injector.binder.bind(

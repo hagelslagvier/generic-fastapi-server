@@ -17,9 +17,7 @@ from app.database.utils.maintenance import (
 )
 
 ROOT_PATH = Path(__file__).parents[3]
-ENV_BASE_PATH = ROOT_PATH / ".env.base"
-ENV_PRODUCTION_PATH = ROOT_PATH / ".env"
-ENV_DEVELOPMENT_PATH = ROOT_PATH / ".env.development"
+ENV_DEVELOPMENT_PATH = ROOT_PATH / ".env.develop"
 
 logging.basicConfig()
 logging.root.setLevel(logging.INFO)
@@ -27,9 +25,7 @@ logging.root.setLevel(logging.INFO)
 logger = logging.getLogger("database.utils.introspection")
 
 for path in [
-    ENV_BASE_PATH,  # dev + prod
-    ENV_DEVELOPMENT_PATH,  # dev only
-    ENV_PRODUCTION_PATH,  # prod only (see Dockerfile: COPY .env.production .env)
+    ENV_DEVELOPMENT_PATH,
 ]:
     if path.exists() and path.is_file():
         load_dotenv(path)

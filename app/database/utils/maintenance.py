@@ -5,7 +5,7 @@ from typing import Any
 from inzicht import session_factory
 from sqlalchemy import Engine
 
-from app.assembly import root_injector
+from app.assembly.assembly import root_injector
 from app.database.orm.models import User
 from app.interactors.auth.interfaces import (
     SecretManagerInterface,
