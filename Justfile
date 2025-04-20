@@ -44,6 +44,13 @@ migrate:
     alembic -c ${ALEMBIC_CONFIG_PATH} upgrade head
 
 
+alembic *args:
+    #!/bin/bash
+    source utils.sh
+    load_env .env.develop
+    alembic -c ${ALEMBIC_CONFIG_PATH} {{args}}
+    exit 0
+
 clean:
     find app tests -type d -name ".*_cache" -exec rm -rf {} +
     find app tests -type d -name "__pycache__" -exec rm -rf {} +
