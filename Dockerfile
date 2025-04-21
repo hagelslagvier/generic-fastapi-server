@@ -2,7 +2,7 @@ ARG APP_NAME
 ARG POETRY_VERSION
 ARG PYTHON_IMAGE
 
-FROM ${PYTHON_IMAGE} AS base
+FROM ${PYTHON_IMAGE?ERROR_PYTHON_IMAGE_NOT_SET} AS base
 
 ARG APP_NAME
 ARG POETRY_VERSION
@@ -19,7 +19,7 @@ RUN POETRY_VIRTUALENVS_PREFER_ACTIVE_PYTHON=false \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     poetry install --without dev
 
-FROM ${PYTHON_IMAGE}
+FROM ${PYTHON_IMAGE?ERROR_PYTHON_IMAGE_NOT_SET}
 
 ARG APP_NAME
 
@@ -29,8 +29,6 @@ RUN apt update -y \
 WORKDIR /${APP_NAME}
 
 COPY --from=base /${APP_NAME}/.venv /${APP_NAME}/.venv
-COPY .env.base .env.base
-COPY .env.production .env
 COPY app app
 
 CMD [ ".venv/bin/python",  "app/run.py" ]
